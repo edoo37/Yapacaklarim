@@ -4,5 +4,6 @@ import java.util.*
 
 data class TodoData(
     var todoName : String? = null,
-    var todoDate : String? = null
+    var todoDate : String? = null,
+    var todoTime : String? = null
 )

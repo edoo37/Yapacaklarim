@@ -45,15 +45,27 @@
 
     <EditText
         android:id="@+id/edt_date"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:layout_marginTop="30dp"
         android:inputType="textPersonName"
         android:hint="Tarih Seçin"
         android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/edt_time"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_task_desc" />
+    <EditText
+        android:id="@+id/edt_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="30dp"
+        android:inputType="textPersonName"
+        android:hint="Saat Seçin"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edt_date"
         app:layout_constraintTop_toBottomOf="@+id/edt_task_desc" />
 
     <androidx.appcompat.widget.AppCompatButton
