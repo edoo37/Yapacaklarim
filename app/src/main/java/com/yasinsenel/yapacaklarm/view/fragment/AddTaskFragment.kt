@@ -33,7 +33,13 @@ class AddTaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         binding.edtDate.setOnFocusChangeListener { view, b ->
+            if(view.isInTouchMode && b){
+                view.performClick()
+            }
+        }
+        binding.edtTime.setOnFocusChangeListener { view, b ->
             if(view.isInTouchMode && b){
                 view.performClick()
             }
@@ -43,7 +49,8 @@ class AddTaskFragment : Fragment() {
             btnConfirm.setOnClickListener {
                 val addList : ArrayList<TodoData> = Hawk.get("data", arrayListOf())
                 val date = binding.edtDate.text.toString()
-                addList.add(TodoData(binding.edtTaskName.text.toString(),date))
+                val time = binding.edtTime.text.toString()
+                addList.add(TodoData(binding.edtTaskName.text.toString(),date,time))
                 Hawk.put("data",addList)
                 Navigation.findNavController(view).navigate(R.id.action_addTaskFragment_to_mainFragment)
             }
@@ -63,7 +70,20 @@ class AddTaskFragment : Fragment() {
                 }
                 datePickerFragment.show(supportFragment,"DatePickerFragment")
             }
+            edtTime.setOnClickListener {
+                showTimePickerDialog()
+            }
         }
+    }
+
+    private fun showTimePickerDialog() {
+        val timePicker = TimePickerFragment { onTimeSelected(it) }
+        timePicker.show(requireActivity().supportFragmentManager, "time")
+
+    }
+
+    private fun onTimeSelected(time: String) {
+        binding.edtTime.setText(time)
     }
 
 }
