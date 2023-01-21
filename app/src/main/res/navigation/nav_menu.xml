@@ -3,19 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_menu"
-    app:startDestination="@id/todoFragment2">
+    app:startDestination="@id/mainFragment">
     <fragment
-        android:id="@+id/todoFragment2"
-        android:name="com.yasinsenel.yapacaklarm.MainFragment"
+        android:id="@+id/mainFragment"
+        android:name="com.yasinsenel.yapacaklarm.view.fragment.MainFragment"
         android:label="fragment_todo"
         tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_todoFragment2_to_addTaskFragment"
+            android:id="@+id/action_mainFragment_to_addTaskFragment"
             app:destination="@id/addTaskFragment" />
     </fragment>
     <fragment
         android:id="@+id/addTaskFragment"
-        android:name="com.yasinsenel.yapacaklarm.AddTaskFragment"
+        android:name="com.yasinsenel.yapacaklarm.view.fragment.AddTaskFragment"
         android:label="fragment_add_task"
-        tools:layout="@layout/fragment_add_task" />
+        tools:layout="@layout/fragment_add_task" >
+
+        <action
+            android:id="@+id/action_addTaskFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
 </navigation>
