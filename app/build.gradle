@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+
 android {
     namespace 'com.yasinsenel.yapacaklarm'
     compileSdk 33
@@ -52,4 +53,5 @@ dependencies {
 
     //HAWK
     implementation "com.orhanobut:hawk:2.0.1"
+    implementation 'com.github.chthai64:SwipeRevealLayout:1.4.0'
 }
