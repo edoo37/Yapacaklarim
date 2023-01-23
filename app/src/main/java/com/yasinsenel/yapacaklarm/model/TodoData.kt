@@ -1,9 +1,16 @@
 package com.yasinsenel.yapacaklarm.model
 
+import android.net.Uri
+import android.os.Parcelable
+import androidx.navigation.NavType
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+@Parcelize
 data class TodoData(
-    var todoName : String? = null,
-    var todoDate : String? = null,
-    var todoTime : String? = null
-)
+    var todoName : String = "",
+    var todoDesc : String = "",
+    var todoDate : String = "",
+    var todoTime : String = "",
+    var todoImage : String = ""
+) : Parcelable

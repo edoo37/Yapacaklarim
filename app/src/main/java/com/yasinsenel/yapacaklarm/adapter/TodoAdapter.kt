@@ -1,13 +1,16 @@
 package com.yasinsenel.yapacaklarm.adapter
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.MainActivity
+import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.ItemsLayoutBinding
 import com.yasinsenel.yapacaklarm.diffUtilCallBack.DiffUtilCallBack
 import com.yasinsenel.yapacaklarm.model.TodoData
@@ -33,11 +36,18 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.Holder>() {
             val getPosition = itemList[position]
             val context = holder.itemView.context
             itemList.remove(getPosition)
-            Hawk.put("data",itemList)
+            Hawk.put("myData",itemList)
             notifyDataSetChanged()
             val intent = Intent(context,MainActivity::class.java)
             context.startActivity(intent)
             Toast.makeText(context,"Item Silindi",Toast.LENGTH_SHORT).show()
+        }
+
+        binding.itemsLayout.setOnClickListener {
+            val getPosition = itemList[position]
+            val bundle = Bundle()
+            bundle.putParcelable("dataClass",getPosition)
+            Navigation.findNavController(it).navigate(R.id.action_mainFragment_to_addTaskFragment,bundle)
         }
     }
 
