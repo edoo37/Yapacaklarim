@@ -43,8 +43,8 @@ class MainFragment : Fragment() {
 
     private fun setAdapter(){
         binding.apply {
-            val oldList : ArrayList<TodoData> = Hawk.get("data", arrayListOf())
-            val newList : ArrayList<TodoData> = Hawk.get("data", arrayListOf())
+            val oldList : ArrayList<TodoData> = Hawk.get("myData", arrayListOf())
+            val newList : ArrayList<TodoData> = Hawk.get("myData", arrayListOf())
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
             recyclerView.adapter = todoAdapter
             todoAdapter.setData(oldList)
