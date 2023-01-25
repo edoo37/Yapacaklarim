@@ -1,8 +1,9 @@
 package com.yasinsenel.yapacaklarm.view.fragment
 
 import android.Manifest
-import android.content.Intent
+import android.content.ContentResolver
 import android.content.pm.PackageManager
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -18,15 +19,19 @@ import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.FragmentAddTaskBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
+import com.yasinsenel.yapacaklarm.util.RemindWorker
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
+import java.util.concurrent.TimeUnit
 
 
 class AddTaskFragment : Fragment() {
@@ -87,13 +92,34 @@ class AddTaskFragment : Fragment() {
 
         binding.apply {
             btnConfirm.setOnClickListener {
-                val addList : ArrayList<TodoData> = Hawk.get("myData", arrayListOf())
+                val addList : ArrayList<TodoData> = Hawk.get("myData2", arrayListOf())
                 val date = binding.edtDate.text.toString()
                 val time = binding.edtTime.text.toString()
                 val uriString = uri.toString()
                 println(addList)
-                addList.add(TodoData(binding.edtTaskName.text.toString(),date,time,uriString))
-                Hawk.put("myData",addList)
+                addList.add(TodoData(binding.edtTaskName.text.toString(),"ads",date,time,uriString))
+                Hawk.put("myData2",addList)
+                val splipt = date.split(".")
+                val year = splipt.get(2).toInt()
+                println(year)
+                val month = splipt.get(1).toInt()
+                val day = splipt.get(0).toInt()
+                println(day)
+                val split = time.split(":")
+                val hour = split.get(0).toInt()
+                println(hour)
+                val minute = split.get(1).toInt()
+                println(minute)
+
+                val userSelectedDateTime = Calendar.getInstance()
+                userSelectedDateTime.set(year,0,day,hour,minute)
+
+                val currentDateTime = Calendar.getInstance()
+                println(currentDateTime.time)
+                val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
+                println(timee)
+                createWorkRequest(binding.edtTaskName.text.toString(),timee)
+
                 Navigation.findNavController(view).navigate(R.id.action_addTaskFragment_to_mainFragment)
             }
 
@@ -167,5 +193,21 @@ class AddTaskFragment : Fragment() {
             invokeCamera()
         }
     }
+
+    private fun createWorkRequest(message: String,timeDelayInSeconds: Long  ) {
+        val myWorkRequest = OneTimeWorkRequestBuilder<RemindWorker>()
+            .setInitialDelay(timeDelayInSeconds, TimeUnit.SECONDS)
+            .setInputData(
+                workDataOf(
+                "title" to "Reminder",
+                "message" to message,
+            )
+            )
+            .build()
+
+        WorkManager.getInstance(requireContext()).enqueue(myWorkRequest)
+    }
+
+
 
 }

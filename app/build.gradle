@@ -55,4 +55,7 @@ dependencies {
     //HAWK
     implementation "com.orhanobut:hawk:2.0.1"
     implementation 'com.github.chthai64:SwipeRevealLayout:1.4.0'
+
+    //WORKMANAGER
+    implementation "androidx.work:work-runtime-ktx:2.5.0"
 }
