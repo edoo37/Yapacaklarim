@@ -36,7 +36,7 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.Holder>() {
             val getPosition = itemList[position]
             val context = holder.itemView.context
             itemList.remove(getPosition)
-            Hawk.put("myData",itemList)
+            Hawk.put("myData2",itemList)
             notifyDataSetChanged()
             val intent = Intent(context,MainActivity::class.java)
             context.startActivity(intent)
