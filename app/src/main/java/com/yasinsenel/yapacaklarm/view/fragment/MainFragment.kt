@@ -1,10 +1,11 @@
 package com.yasinsenel.yapacaklarm.view.fragment
 
 import android.os.Bundle
+import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
@@ -59,5 +60,4 @@ class MainFragment : Fragment() {
             todoAdapter.setNewList(newList)
         }
     }
-
 }
