@@ -1,5 +1,6 @@
 package com.yasinsenel.yapacaklarm
 
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -9,9 +10,11 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.Navigation
+import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.databinding.ActivityMainBinding
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private lateinit var binding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,26 +22,22 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        this.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.main_menu,menu)
-            }
+        Hawk.init(this).build()
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.about -> {
-                        // clearCompletedTasks()
-                        true
-                    }
-                    R.id.settings -> {
-                        // loadTasks(true)
-                        true
-                    }
-                    else -> false
-                }
-            }
+        val selectedLanguage = Hawk.get("selectedLanguage","")
+        when(selectedLanguage){
+            "English"->loadLocale("en")
+            "Türkçe"->loadLocale("tr")
+        }
 
-        })
     }
 
+    private fun loadLocale(lang:String){
+        val locale= Locale(lang)
+        //Seçilen dilimizi bir sonraki girişlerde default dil haline getiriyoruz.
+        Locale.setDefault(locale)
+        val config: Configuration = Configuration()
+        config.setLocale(locale)
+        this.resources.updateConfiguration(config,this.resources.displayMetrics)
+    }
 }
