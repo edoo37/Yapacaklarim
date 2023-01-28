@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Todo List</string>
+    <string name="btn_confirm">CONFIRM</string>
+    <string name="slct_time">Select Time</string>
+    <string name="slct_date">Select Date</string>
+    <string name="txt_desc_task">Task Description</string>
+    <string name="txt_name_task">Task Name</string>
+    <string name="screen_mode">SCREEN MODE</string>
+    <string name="txt_language">SELECT LANGUAGE</string>
+</resources>
