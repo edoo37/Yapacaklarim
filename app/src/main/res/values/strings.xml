@@ -7,6 +7,11 @@
     <string name="txt_name_task">Görev Adı</string>
     <string name="screen_mode">EKRAN MODU</string>
     <string name="txt_language">DİL SEÇİN</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_empy">Yapılacak görev yok. Eklemek için artı tuşuna basınız.</string>
+    <string name="txt_delete">SİL</string>
+    <string name="txt_delete_message">Item Silindi.</string>
+    <string name="txt_menu_settings">Ayarlar</string>
+    <string name="txt_menu_about">Hakkımızda</string>
+    <string name="txt_error_message">Tüm alanları doldurun.</string>
+    <string name="txt_search">Ara...</string>
 </resources>

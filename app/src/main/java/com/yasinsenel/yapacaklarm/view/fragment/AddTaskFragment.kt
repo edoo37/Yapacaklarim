@@ -18,7 +18,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -27,6 +30,7 @@ import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.FragmentAddTaskBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.util.RemindWorker
+import kotlinx.android.synthetic.main.items_layout.*
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -58,6 +62,9 @@ class AddTaskFragment : Fragment() {
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
+
+
+
             getContent  = registerForActivityResult(ActivityResultContracts.TakePicture()){
                 if(it){
                     binding.imageView.setImageURI(uri)
@@ -89,60 +96,30 @@ class AddTaskFragment : Fragment() {
         }
 
 
-
-        binding.apply {
-            btnConfirm.setOnClickListener {
-                val addList : ArrayList<TodoData> = Hawk.get("myData2", arrayListOf())
-                val date = binding.edtDate.text.toString()
-                val time = binding.edtTime.text.toString()
-                val uriString = uri.toString()
-                println(addList)
-                addList.add(TodoData(binding.edtTaskName.text.toString(),"ads",date,time,uriString))
-                Hawk.put("myData2",addList)
-                val splipt = date.split(".")
-                val year = splipt.get(2).toInt()
-                println(year)
-                val month = splipt.get(1).toInt()
-                val day = splipt.get(0).toInt()
-                println(day)
-                val split = time.split(":")
-                val hour = split.get(0).toInt()
-                println(hour)
-                val minute = split.get(1).toInt()
-                println(minute)
-
-                val userSelectedDateTime = Calendar.getInstance()
-                userSelectedDateTime.set(year,0,day,hour,minute)
-
-                val currentDateTime = Calendar.getInstance()
-                println(currentDateTime.time)
-                val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
-                println(timee)
-                createWorkRequest(binding.edtTaskName.text.toString(),timee)
-
-                Navigation.findNavController(view).navigate(R.id.action_addTaskFragment_to_mainFragment)
-            }
-
-            edtDate.setOnClickListener {
-                val datePickerFragment = DataPickerFragment()
-                val supportFragment = requireActivity().supportFragmentManager
-
-                supportFragment.setFragmentResultListener(
-                    "REQUEST_KEY",
-                    viewLifecycleOwner
-                ){ resultKey, bundle ->
-                    if (resultKey == "REQUEST_KEY") {
-                        val date = bundle.getString("SELECTED_DATE")
-                        binding.edtDate.setText(date)
-                    }
+            binding.apply {
+                btnConfirm.setOnClickListener {
+                    checkFields()
                 }
-                datePickerFragment.show(supportFragment,"DatePickerFragment")
-            }
-            edtTime.setOnClickListener {
-                showTimePickerDialog()
-            }
 
-        }
+                edtDate.setOnClickListener {
+                    val datePickerFragment = DataPickerFragment()
+                    val supportFragment = requireActivity().supportFragmentManager
+
+                    supportFragment.setFragmentResultListener(
+                        "REQUEST_KEY",
+                        viewLifecycleOwner
+                    ){ resultKey, bundle ->
+                        if (resultKey == "REQUEST_KEY") {
+                            val date = bundle.getString("SELECTED_DATE")
+                            edtDate.setText(date)
+                        }
+                    }
+                    datePickerFragment.show(supportFragment,"DatePickerFragment")
+                }
+                edtTime.setOnClickListener {
+                    showTimePickerDialog()
+                }
+            }
     }
 
     private fun showTimePickerDialog() {
@@ -208,6 +185,48 @@ class AddTaskFragment : Fragment() {
         WorkManager.getInstance(requireContext()).enqueue(myWorkRequest)
     }
 
+    private fun checkFields(){
+        binding.apply {
+            if(edtTaskName.text.isEmpty() || edtTaskDesc.text.isEmpty() || edtDate.text.isEmpty()
+                || edtTime.text.isEmpty()){
+                Toast.makeText(requireContext(),R.string.txt_error_message,Toast.LENGTH_SHORT).show()
+            }
+            else{
+                fillFields()
+            }
+        }
+
+    }
+
+    private fun fillFields(){
+        binding.apply {
+            val addList : ArrayList<TodoData> = Hawk.get("myData2", arrayListOf())
+            val date = edtDate.text.toString()
+            val time = edtTime.text.toString()
+            val uriString = uri.toString()
+            println(addList)
+            addList.add(TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString))
+            Hawk.put("myData2",addList)
 
 
+            val splipt = date.split(".")
+            val year = splipt.get(2).toInt()
+            val month = splipt.get(1).toInt()  - 1
+            val day = splipt.get(0).toInt()
+            val split = time.split(":")
+            val hour = split.get(0).toInt()
+            val minute = split.get(1).toInt()
+
+            val userSelectedDateTime = Calendar.getInstance()
+            userSelectedDateTime.set(year,month,day,hour,minute)
+
+            val currentDateTime = Calendar.getInstance()
+            println(currentDateTime.time)
+            val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
+            createWorkRequest(edtTaskName.text.toString(),timee)
+            Navigation.findNavController(requireView()).navigate(R.id.action_addTaskFragment_to_mainFragment)
+
+        }
+
+    }
 }

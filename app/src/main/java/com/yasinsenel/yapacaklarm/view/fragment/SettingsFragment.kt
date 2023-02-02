@@ -69,8 +69,10 @@ class SettingsFragment : Fragment() {
                 }
                 .setPositiveButton("Tamam"){dialog,which->
                     when(selectedItemIndex){
-                        0->{setLocale("tr")}
-                        1->{setLocale("en")}
+                        0->{setLocale("tr")
+                            Hawk.put("selectedLang","tr")}
+                        1->{setLocale("en")
+                            Hawk.put("selectedLang","en")}
                     }
                     binding.tvSelectLanguage.setText(selectedItem)
                     Hawk.put("selectedLanguage",selectedItem)

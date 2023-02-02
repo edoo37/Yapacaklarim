@@ -1,15 +1,7 @@
 package com.yasinsenel.yapacaklarm
 
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.lifecycle.Lifecycle
-import androidx.navigation.Navigation
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.databinding.ActivityMainBinding
 import java.util.*
@@ -40,4 +32,5 @@ class MainActivity : BaseActivity() {
         config.setLocale(locale)
         this.resources.updateConfiguration(config,this.resources.displayMetrics)
     }
+
 }
