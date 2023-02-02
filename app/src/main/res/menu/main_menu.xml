@@ -3,8 +3,8 @@
 
     <item
         android:id="@+id/settings"
-        android:title="Ayarlar"/>
+        android:title="@string/txt_menu_settings"/>
     <item
         android:id="@+id/about"
-        android:title="Hakkımızda"/>
+        android:title="@string/txt_menu_about"/>
 </menu>

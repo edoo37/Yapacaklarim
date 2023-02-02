@@ -8,4 +8,11 @@
     <string name="txt_name_task">Task Name</string>
     <string name="screen_mode">SCREEN MODE</string>
     <string name="txt_language">SELECT LANGUAGE</string>
+    <string name="txt_empy">There is no task. Adding to task, please click to plus button.</string>
+    <string name="txt_delete">DELETE</string>
+    <string name="txt_delete_message">Item Deleted</string>
+    <string name="txt_menu_settings">Settings</string>
+    <string name="txt_menu_about">About</string>
+    <string name="txt_error_message">Please fill all fields.</string>
+    <string name="txt_search">Search...</string>
 </resources>
