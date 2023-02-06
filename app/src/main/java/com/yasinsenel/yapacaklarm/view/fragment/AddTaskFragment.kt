@@ -1,9 +1,7 @@
 package com.yasinsenel.yapacaklarm.view.fragment
 
 import android.Manifest
-import android.content.ContentResolver
 import android.content.pm.PackageManager
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -18,10 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -29,7 +24,7 @@ import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.FragmentAddTaskBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
-import com.yasinsenel.yapacaklarm.util.RemindWorker
+import com.yasinsenel.yapacaklarm.utils.RemindWorker
 import kotlinx.android.synthetic.main.items_layout.*
 import java.io.File
 import java.io.IOException

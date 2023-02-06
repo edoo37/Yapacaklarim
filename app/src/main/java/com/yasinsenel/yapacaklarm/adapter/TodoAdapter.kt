@@ -32,19 +32,17 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.Holder>() {
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.binding.tvTaskName.text = itemList[position].todoName.toString()
-        holder.binding.tvDate.text = itemList[position].todoDate.toString()
-        holder.binding.tvTime.text = itemList[position].todoTime.toString()
+        holder.binding.tvTaskName.text = itemList[position].todoName
+        holder.binding.tvDate.text = itemList[position].todoDate
+        holder.binding.tvTime.text = itemList[position].todoTime
 
         binding.text.setOnClickListener {
             val getPosition = itemList[position]
             val context = holder.itemView.context
             itemList.remove(getPosition)
-            Hawk.put("myData2",itemList)
             notifyDataSetChanged()
-            val intent = Intent(context,MainActivity::class.java)
-            context.startActivity(intent)
-            (context as Activity).finish()
+            Hawk.put("myData2",itemList)
+            Navigation.findNavController(it).navigate(R.id.action_mainFragment_self)
             Toast.makeText(context,R.string.txt_delete_message,Toast.LENGTH_SHORT).show()
         }
 
@@ -73,5 +71,6 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.Holder>() {
         diffResult.dispatchUpdatesTo(this)
 
     }
+
 
 }
