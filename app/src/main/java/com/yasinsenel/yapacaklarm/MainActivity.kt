@@ -4,8 +4,10 @@ import android.content.res.Configuration
 import android.os.Bundle
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity() {
     private lateinit var binding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {

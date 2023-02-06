@@ -1,9 +1,8 @@
-package com.yasinsenel.yapacaklarm.util
+package com.yasinsenel.yapacaklarm.utils
 
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
 
 class RemindWorker(val context : Context,params : WorkerParameters) : Worker(context,params) {
     override fun doWork(): Result {

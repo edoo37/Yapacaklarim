@@ -2,6 +2,8 @@ package com.yasinsenel.yapacaklarm.view.fragment
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -9,20 +11,29 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
+import com.bumptech.glide.Glide
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
 import com.yasinsenel.yapacaklarm.databinding.FragmentMainBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
+import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
 
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
     private lateinit var binding : FragmentMainBinding
     private var todoModel: TodoData? = TodoData()
@@ -30,6 +41,7 @@ class MainFragment : Fragment() {
     private var newList : ArrayList<TodoData> = arrayListOf()
     private var oldList : ArrayList<TodoData> = arrayListOf()
     private val filteredList : ArrayList<TodoData> = arrayListOf()
+    private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,6 +59,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Hawk.init(requireContext()).build()
 
+        getImageFromAPI()
 
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -86,7 +99,6 @@ class MainFragment : Fragment() {
         binding.fab.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_addTaskFragment)
         }
-        checkAppMode()
 
         setAdapter()
     }
@@ -113,17 +125,7 @@ class MainFragment : Fragment() {
         val anan = Hawk.get("mode",false)
         val isSelected = Hawk.get("isSelected",false)
 
-        val date2 = Hawk.get("selectedLang","tr")
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale(date2))
-        val date = Date()
-        sdf.applyPattern("EEE, d, yyyy, HH:mm")
-        val str = sdf.format(date)
-        val split = str.split(",")
-        val day = split.get(0)
-        val dayNum = split.get(1)
-        val dayTime = split.get(3)
-        binding.tvDate.text = day + dayNum
-        binding.tvTime.text = dayTime
+
 
 
         if(isSelected){
@@ -167,4 +169,42 @@ class MainFragment : Fragment() {
     }
 
 
+    private fun getImageFromAPI(){
+        mainFragmentViewModel.getWeatherData("nature")
+        mainFragmentViewModel.getImageData.observe(viewLifecycleOwner){
+            it?.let {
+                println(it.alt_description)
+                Glide.with(requireContext())
+                    .load(it.urls.full)
+                    .into(binding.ivMain)
+            }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun onStart() {
+        super.onStart()
+
+        val date2 = Hawk.get("selectedLang","tr")
+        GlobalScope.launch {
+            val runnable = object : Runnable{
+                override fun run() {
+                    val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale(date2))
+                    val date = Date()
+                    sdf.applyPattern("EEE, d, yyyy, HH:mm")
+                    val str = sdf.format(date)
+                    val split = str.split(",")
+                    val day = split.get(0)
+                    val dayNum = split.get(1)
+                    val dayTime = split.get(3)
+                    binding.tvDate.text = day + dayNum
+                    binding.tvTime.text = dayTime
+                    Handler(Looper.getMainLooper()).postDelayed(this,60000)
+                }
+
+            }
+            Handler(Looper.getMainLooper()).post(runnable)
+        }
+
+    }
 }
