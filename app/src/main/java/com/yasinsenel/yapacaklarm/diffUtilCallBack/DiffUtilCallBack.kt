@@ -3,7 +3,7 @@ package com.yasinsenel.yapacaklarm.diffUtilCallBack
 import androidx.recyclerview.widget.DiffUtil
 import com.yasinsenel.yapacaklarm.model.TodoData
 
-class DiffUtilCallBack(private val oldList : ArrayList<TodoData>, private val newList : ArrayList<TodoData>)
+class DiffUtilCallBack(private val oldList : List<TodoData>, private val newList : List<TodoData>)
     : DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size

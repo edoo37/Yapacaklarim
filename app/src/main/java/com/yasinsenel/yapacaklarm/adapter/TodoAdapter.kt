@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
+import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.util.findColumnIndexBySuffix
@@ -18,10 +18,12 @@ import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.ItemsLayoutBinding
 import com.yasinsenel.yapacaklarm.diffUtilCallBack.DiffUtilCallBack
 import com.yasinsenel.yapacaklarm.model.TodoData
+import dagger.hilt.android.AndroidEntryPoint
 
-class TodoAdapter : RecyclerView.Adapter<TodoAdapter.Holder>() {
+
+class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel) : RecyclerView.Adapter<TodoAdapter.Holder>() {
     private lateinit var binding : ItemsLayoutBinding
-    private var itemList : ArrayList<TodoData> = arrayListOf()
+    private var itemList : MutableList<TodoData> = arrayListOf()
 
     inner class Holder(val binding : ItemsLayoutBinding) : RecyclerView.ViewHolder(binding.root){
     }
@@ -40,9 +42,9 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.Holder>() {
             val getPosition = itemList[position]
             val context = holder.itemView.context
             itemList.remove(getPosition)
+            mainFragmentViewModel.deleteItem(getPosition)
             notifyDataSetChanged()
-            Hawk.put("myData2",itemList)
-            Navigation.findNavController(it).navigate(R.id.action_mainFragment_self)
+            //Navigation.findNavController(it).navigate(R.id.action_mainFragment_self)
             Toast.makeText(context,R.string.txt_delete_message,Toast.LENGTH_SHORT).show()
         }
 
@@ -59,14 +61,14 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.Holder>() {
         return itemList.size
     }
 
-    fun setData(data: ArrayList<TodoData>) {
+    fun setData(data: MutableList<TodoData>) {
+        itemList.clear()
         this.itemList = data
     }
 
-    fun setNewList(myNewList : ArrayList<TodoData>){
+    fun setNewList(myNewList : MutableList<TodoData>){
         val diffUtilCallBack = DiffUtilCallBack(itemList,myNewList)
         val diffResult = DiffUtil.calculateDiff(diffUtilCallBack)
-        itemList.clear()
         itemList.addAll(myNewList)
         diffResult.dispatchUpdatesTo(this)
 

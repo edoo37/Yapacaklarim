@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -25,7 +26,8 @@ import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.FragmentAddTaskBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.utils.RemindWorker
-import kotlinx.android.synthetic.main.items_layout.*
+import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -33,11 +35,13 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
+@AndroidEntryPoint
 class AddTaskFragment : Fragment() {
         private lateinit var binding : FragmentAddTaskBinding
         private var uri : Uri? = null
         lateinit var getContent : ActivityResultLauncher<Uri>
         private var todoModel: TodoData? = TodoData()
+        private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
         companion object{
             const val CAMERA_PERMISSION = 1
         }
@@ -195,13 +199,11 @@ class AddTaskFragment : Fragment() {
 
     private fun fillFields(){
         binding.apply {
-            val addList : ArrayList<TodoData> = Hawk.get("myData2", arrayListOf())
             val date = edtDate.text.toString()
             val time = edtTime.text.toString()
             val uriString = uri.toString()
-            println(addList)
-            addList.add(TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString))
-            Hawk.put("myData2",addList)
+            val list = TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString)
+            mainFragmentViewModel.addItem(list)
 
 
             val splipt = date.split(".")
