@@ -37,13 +37,13 @@ import java.util.*
 class MainFragment : Fragment() {
     private lateinit var binding : FragmentMainBinding
     private var todoModel: TodoData? = TodoData()
-    private val todoAdapter = TodoAdapter()
-    private var newList : ArrayList<TodoData> = arrayListOf()
-    private var oldList : ArrayList<TodoData> = arrayListOf()
-    private val filteredList : ArrayList<TodoData> = arrayListOf()
+    private lateinit var todoAdapter : TodoAdapter
+    private var setList : MutableList<TodoData> = mutableListOf()
+    private val filteredList : MutableList<TodoData> = mutableListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
     }
 
@@ -51,15 +51,37 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Hawk.init(requireContext()).build()
 
         getImageFromAPI()
+        setAdapter()
+        mainFragmentViewModel.getAllData()
+        mainFragmentViewModel.getRoomList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
+                setList = it
+                todoAdapter.setNewList(setList)
+                todoAdapter.setData(setList)
+                if(setList.size == 0){
+                    binding.tvEmpty.visibility = View.VISIBLE
+                    println("Deneme")
+                }
+                else{
+                    binding.tvEmpty.visibility = View.INVISIBLE
+                }
+            }
+
+        })
+
+
 
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -100,24 +122,16 @@ class MainFragment : Fragment() {
             Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_addTaskFragment)
         }
 
-        setAdapter()
+
     }
 
     private fun setAdapter(){
+        todoAdapter = TodoAdapter(mainFragmentViewModel)
         binding.apply {
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
             recyclerView.adapter = todoAdapter
-            oldList = Hawk.get("myData2", arrayListOf())
-            newList = Hawk.get("myData2", arrayListOf())
-            if(newList.size == 0){
-                binding.tvEmpty.visibility = View.VISIBLE
-                println("Deneme")
-            }
-            else{
-                binding.tvEmpty.visibility = View.INVISIBLE
-            }
-            todoAdapter.setData(oldList)
-            todoAdapter.setNewList(newList)
+
+
         }
     }
 
@@ -155,7 +169,7 @@ class MainFragment : Fragment() {
     private fun search(text : String?){
         filteredList.clear()
         if(text?.length!! >=3){
-            newList.forEach {
+            setList.forEach {
                 if(it.todoName.lowercase().startsWith(text.lowercase())){
                     filteredList.add(it)
                 }
@@ -163,7 +177,7 @@ class MainFragment : Fragment() {
             todoAdapter.setNewList(filteredList)
         }
         else{
-            todoAdapter.setNewList(newList)
+            todoAdapter.setNewList(setList)
         }
 
     }

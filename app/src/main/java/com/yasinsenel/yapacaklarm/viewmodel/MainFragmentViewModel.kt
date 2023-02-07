@@ -1,8 +1,10 @@
 package com.yasinsenel.yapacaklarm.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.model.UnsplashModel
 import com.yasinsenel.yapacaklarm.repository.TodoRepository
 import com.yasinsenel.yapacaklarm.utils.Resource
@@ -13,6 +15,17 @@ import javax.inject.Inject
 @HiltViewModel
 class MainFragmentViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
     val getImageData = MutableLiveData<UnsplashModel?>()
+
+    val getRoomList = MutableLiveData<MutableList<TodoData>?>()
+
+
+    //Main Fragment
+    fun getAllData(){
+        viewModelScope.launch {
+            val result = repository.gettAllData()
+            getRoomList.value = result
+        }
+    }
 
     fun getWeatherData(categoryName : String){
         viewModelScope.launch {
@@ -30,5 +43,16 @@ class MainFragmentViewModel @Inject constructor(private val repository: TodoRepo
             }
         }
 
+    }
+    // AddItemFragment
+    fun addItem(todoData: TodoData){
+        viewModelScope.launch {
+            repository.insertItem(todoData)
+        }
+    }
+    fun deleteItem(todoData: TodoData){
+        viewModelScope.launch {
+            repository.deleteItem(todoData)
+        }
     }
 }
