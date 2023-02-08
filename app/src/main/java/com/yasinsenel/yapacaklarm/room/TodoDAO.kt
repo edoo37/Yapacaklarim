@@ -16,4 +16,7 @@ interface TodoDAO {
     @Query("SELECT * FROM tododata")
     suspend fun gettAllList() : MutableList<TodoData>
 
+    @Update
+    suspend fun updateItem(todoData: TodoData)
+
 }

@@ -21,9 +21,17 @@ import com.yasinsenel.yapacaklarm.model.TodoData
 import dagger.hilt.android.AndroidEntryPoint
 
 
-class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel) : RecyclerView.Adapter<TodoAdapter.Holder>() {
+class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel,private val removeitem: removeItem) : RecyclerView.Adapter<TodoAdapter.Holder>() {
     private lateinit var binding : ItemsLayoutBinding
-    private var itemList : MutableList<TodoData> = arrayListOf()
+    private var itemList : MutableList<TodoData> = mutableListOf()
+    private var deneme : ArrayList<String> = arrayListOf()
+
+    interface removeItem{
+        fun deleteItem(position: Int)
+
+
+    }
+
 
     inner class Holder(val binding : ItemsLayoutBinding) : RecyclerView.ViewHolder(binding.root){
     }
@@ -38,21 +46,19 @@ class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel) : Re
         holder.binding.tvDate.text = itemList[position].todoDate
         holder.binding.tvTime.text = itemList[position].todoTime
 
-        binding.text.setOnClickListener {
-            val getPosition = itemList[position]
-            val context = holder.itemView.context
-            itemList.remove(getPosition)
-            mainFragmentViewModel.deleteItem(getPosition)
-            notifyDataSetChanged()
+        holder.binding.text.setOnClickListener {
+
+            removeitem.deleteItem(position)
+            this.itemList.removeAt(position)
             //Navigation.findNavController(it).navigate(R.id.action_mainFragment_self)
-            Toast.makeText(context,R.string.txt_delete_message,Toast.LENGTH_SHORT).show()
+
         }
 
         binding.itemsLayout.setOnClickListener {
             val getPosition = itemList[position]
             val bundle = Bundle()
             bundle.putParcelable("dataClass",getPosition)
-            Navigation.findNavController(it).navigate(R.id.action_mainFragment_to_addTaskFragment,bundle)
+            Navigation.findNavController(it).navigate(R.id.action_mainFragment_to_updateItemFragment,bundle)
 
         }
     }
@@ -62,17 +68,18 @@ class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel) : Re
     }
 
     fun setData(data: MutableList<TodoData>) {
-        itemList.clear()
-        this.itemList = data
+        itemList = data.toMutableList()
     }
 
     fun setNewList(myNewList : MutableList<TodoData>){
         val diffUtilCallBack = DiffUtilCallBack(itemList,myNewList)
         val diffResult = DiffUtil.calculateDiff(diffUtilCallBack)
+        itemList.clear()
         itemList.addAll(myNewList)
         diffResult.dispatchUpdatesTo(this)
 
     }
+
 
 
 }

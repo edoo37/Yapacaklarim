@@ -28,4 +28,7 @@ class TodoRepository @Inject constructor(private val api : ImagesAPI ,private va
     suspend fun deleteItem(todoData: TodoData){
         todoDAO.deleteItem(todoData)
     }
+    suspend fun updateItem(todoData: TodoData){
+        todoDAO.updateItem(todoData)
+    }
 }

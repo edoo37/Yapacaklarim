@@ -73,13 +73,6 @@ class AddTaskFragment : Fragment() {
                 }
             }
 
-            val bundleData = arguments
-            todoModel = bundleData?.getParcelable("dataClass")
-            binding.edtTaskName.setText(todoModel?.todoName)
-            binding.edtTaskDesc.setText(todoModel?.todoDesc)
-            binding.edtDate.setText(todoModel?.todoDate)
-            binding.imageView.setImageURI(todoModel?.todoImage?.toUri())
-
 
         binding.imageView.setOnClickListener {
             //readExternalPermissionContract.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -202,6 +195,7 @@ class AddTaskFragment : Fragment() {
             val date = edtDate.text.toString()
             val time = edtTime.text.toString()
             val uriString = uri.toString()
+
             val list = TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString)
             mainFragmentViewModel.addItem(list)
 

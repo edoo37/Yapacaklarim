@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -15,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
 import com.bumptech.glide.Glide
 import com.orhanobut.hawk.Hawk
@@ -31,15 +33,16 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), TodoAdapter.removeItem {
     private lateinit var binding : FragmentMainBinding
-    private var todoModel: TodoData? = TodoData()
     private lateinit var todoAdapter : TodoAdapter
     private var setList : MutableList<TodoData> = mutableListOf()
     private val filteredList : MutableList<TodoData> = mutableListOf()
+    private val list : ArrayList<String> = arrayListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,25 +65,30 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Hawk.init(requireContext()).build()
 
+
         getImageFromAPI()
-        setAdapter()
+
         mainFragmentViewModel.getAllData()
-        mainFragmentViewModel.getRoomList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        mainFragmentViewModel.getRoomList.observe(viewLifecycleOwner) {
             it?.let {
                 setList = it
-                todoAdapter.setNewList(setList)
-                todoAdapter.setData(setList)
-                if(setList.size == 0){
-                    binding.tvEmpty.visibility = View.VISIBLE
-                    println("Deneme")
-                }
-                else{
-                    binding.tvEmpty.visibility = View.INVISIBLE
-                }
+                setAdapter()
+            }
+
+        }
+
+
+        binding.recyclerView.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
+            override fun onChildViewAttachedToWindow(view: View) {
+               //binding.tvEmpty.visibility = View.INVISIBLE
+            }
+
+            override fun onChildViewDetachedFromWindow(view: View) {
+               binding.tvEmpty.visibility = View.VISIBLE
+
             }
 
         })
-
 
 
 
@@ -126,11 +134,19 @@ class MainFragment : Fragment() {
     }
 
     private fun setAdapter(){
-        todoAdapter = TodoAdapter(mainFragmentViewModel)
+        todoAdapter = TodoAdapter(mainFragmentViewModel,this@MainFragment)
         binding.apply {
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
             recyclerView.adapter = todoAdapter
+            todoAdapter.setNewList(setList)
+            todoAdapter.setData(setList)
 
+            if(setList.size>0){
+                binding.tvEmpty.visibility = View.INVISIBLE
+            }
+            else{
+                binding.tvEmpty.visibility = View.VISIBLE
+            }
 
         }
     }
@@ -168,6 +184,7 @@ class MainFragment : Fragment() {
 
     private fun search(text : String?){
         filteredList.clear()
+        println(list)
         if(text?.length!! >=3){
             setList.forEach {
                 if(it.todoName.lowercase().startsWith(text.lowercase())){
@@ -220,5 +237,19 @@ class MainFragment : Fragment() {
             Handler(Looper.getMainLooper()).post(runnable)
         }
 
+    }
+
+    override fun deleteItem(position: Int) {
+        val getData = setList[position]
+        mainFragmentViewModel.deleteItem(getData)
+        setList.removeAt(position)
+        todoAdapter.notifyItemRemoved(position)
+        Toast.makeText(context,R.string.txt_delete_message, Toast.LENGTH_SHORT).show()
+        if(setList.size==0){
+            binding.tvEmpty.visibility = View.VISIBLE
+        }
+        else{
+            binding.tvEmpty.visibility = View.INVISIBLE
+        }
     }
 }
