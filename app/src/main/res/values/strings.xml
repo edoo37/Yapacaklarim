@@ -14,4 +14,5 @@
     <string name="txt_menu_about">Hakkımızda</string>
     <string name="txt_error_message">Tüm alanları doldurun.</string>
     <string name="txt_search">Ara...</string>
+    <string name="btn_edit">DEĞİŞTİR</string>
 </resources>

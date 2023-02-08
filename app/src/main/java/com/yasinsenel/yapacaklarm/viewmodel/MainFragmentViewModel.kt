@@ -55,4 +55,9 @@ class MainFragmentViewModel @Inject constructor(private val repository: TodoRepo
             repository.deleteItem(todoData)
         }
     }
+    fun updateItem(todoData: TodoData){
+        viewModelScope.launch {
+            repository.updateItem(todoData)
+        }
+    }
 }

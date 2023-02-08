@@ -15,4 +15,5 @@
     <string name="txt_menu_about">About</string>
     <string name="txt_error_message">Please fill all fields.</string>
     <string name="txt_search">Search...</string>
+    <string name="btn_edit">EDIT</string>
 </resources>
