@@ -12,6 +12,7 @@
         android:layout_width="400dp"
         android:layout_height="200dp"
         android:layout_marginTop="80dp"
+        android:scaleType="fitXY"
         android:src="@drawable/group_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

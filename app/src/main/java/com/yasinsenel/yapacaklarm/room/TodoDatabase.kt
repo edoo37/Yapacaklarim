@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.yasinsenel.yapacaklarm.model.TodoData
 
-@Database(entities = [TodoData::class], version = 1)
+@Database(entities = [TodoData::class], version = 4)
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoDao() : TodoDAO
 

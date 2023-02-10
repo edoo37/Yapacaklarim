@@ -1,20 +1,22 @@
 package com.yasinsenel.yapacaklarm.view.fragment
 
+import android.content.ContentResolver
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
@@ -24,23 +26,22 @@ import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
 import com.yasinsenel.yapacaklarm.databinding.FragmentMainBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
+import com.yasinsenel.yapacaklarm.utils.removeWorkReqeust
 import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
 class MainFragment : Fragment(), TodoAdapter.removeItem {
     private lateinit var binding : FragmentMainBinding
     private lateinit var todoAdapter : TodoAdapter
-    private var setList : MutableList<TodoData> = mutableListOf()
+    private var setList : MutableList<TodoData>? = mutableListOf()
     private val filteredList : MutableList<TodoData> = mutableListOf()
     private val list : ArrayList<String> = arrayListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
@@ -57,6 +58,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
 
         binding = FragmentMainBinding.inflate(inflater, container, false)
+        Log.d("myview",binding.toString())
         return binding.root
     }
 
@@ -65,17 +67,26 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         super.onViewCreated(view, savedInstanceState)
         Hawk.init(requireContext()).build()
 
+        checkAppMode()
 
+        val asd : String? = null
+        println(asd.toString())
+
+
+
+        todoAdapter = TodoAdapter(mainFragmentViewModel,this@MainFragment)
         getImageFromAPI()
-
         mainFragmentViewModel.getAllData()
         mainFragmentViewModel.getRoomList.observe(viewLifecycleOwner) {
             it?.let {
                 setList = it
-                setAdapter()
+                println(it)
             }
-
+            setAdapter()
         }
+
+
+
 
 
         binding.recyclerView.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
@@ -84,7 +95,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             }
 
             override fun onChildViewDetachedFromWindow(view: View) {
-               binding.tvEmpty.visibility = View.VISIBLE
+               //binding.tvEmpty.visibility = View.VISIBLE
 
             }
 
@@ -117,7 +128,8 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                         true
                     }
                     R.id.settings -> {
-                        Navigation.findNavController(requireView()).navigate(R.id.action_mainFragment_to_settingsFragment)
+
+                        Navigation.findNavController(binding.root).navigate(R.id.action_mainFragment_to_settingsFragment)
                         true
                     }
                     else -> false
@@ -134,14 +146,14 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     }
 
     private fun setAdapter(){
-        todoAdapter = TodoAdapter(mainFragmentViewModel,this@MainFragment)
+
         binding.apply {
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
             recyclerView.adapter = todoAdapter
-            todoAdapter.setNewList(setList)
-            todoAdapter.setData(setList)
+            todoAdapter.setNewList(setList!!)
+            todoAdapter.setData(setList!!)
 
-            if(setList.size>0){
+            if(setList!!.size>0){
                 binding.tvEmpty.visibility = View.INVISIBLE
             }
             else{
@@ -154,9 +166,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private fun checkAppMode(){
         val anan = Hawk.get("mode",false)
         val isSelected = Hawk.get("isSelected",false)
-
-
-
 
         if(isSelected){
             if(anan){
@@ -177,8 +186,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                 }
             }
         }
-
-
     }
 
 
@@ -186,15 +193,15 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         filteredList.clear()
         println(list)
         if(text?.length!! >=3){
-            setList.forEach {
-                if(it.todoName.lowercase().startsWith(text.lowercase())){
+            setList?.forEach {
+                if(it.todoName?.lowercase()!!.startsWith(text.lowercase())){
                     filteredList.add(it)
                 }
             }
             todoAdapter.setNewList(filteredList)
         }
         else{
-            todoAdapter.setNewList(setList)
+            todoAdapter.setNewList(setList!!)
         }
 
     }
@@ -240,12 +247,20 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     }
 
     override fun deleteItem(position: Int) {
-        val getData = setList[position]
-        mainFragmentViewModel.deleteItem(getData)
-        setList.removeAt(position)
+        val getData = setList?.get(position)
+        requireContext().removeWorkReqeust(setList?.get(position)?.randomString!!)
+        mainFragmentViewModel.deleteItem(getData!!)
+
+        val getUri = setList?.get(position)?.todoImage
+        if(getUri != null){
+            val contentResolver: ContentResolver = requireActivity().getContentResolver()
+            contentResolver.delete(getUri.toUri(), null, null)
+        }
+        setList?.removeAt(position)
         todoAdapter.notifyItemRemoved(position)
+        todoAdapter.notifyItemRangeChanged(position,setList!!.size)
         Toast.makeText(context,R.string.txt_delete_message, Toast.LENGTH_SHORT).show()
-        if(setList.size==0){
+        if(setList?.size==0){
             binding.tvEmpty.visibility = View.VISIBLE
         }
         else{

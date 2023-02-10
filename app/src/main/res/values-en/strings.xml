@@ -16,4 +16,8 @@
     <string name="txt_error_message">Please fill all fields.</string>
     <string name="txt_search">Search...</string>
     <string name="btn_edit">EDIT</string>
+    <string name="btn_language">English</string>
+    <string name="btn_positive">YES</string>
+    <string name="btn_negative">CANCEL</string>
+    <string name="txt_title">Change Language</string>
 </resources>

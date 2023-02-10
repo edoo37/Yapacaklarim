@@ -62,12 +62,12 @@ class SettingsFragment : Fragment() {
     fun selectLanguage(){
         binding.tvSelectLanguage.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Dili Değiştir")
+                .setTitle(R.string.txt_title)
                 .setSingleChoiceItems(arrItems,selectedItemIndex){dialog,which->
                     selectedItemIndex = which
                     selectedItem = arrItems[which]
                 }
-                .setPositiveButton("Tamam"){dialog,which->
+                .setPositiveButton(R.string.btn_positive){dialog,which->
                     when(selectedItemIndex){
                         0->{setLocale("tr")
                             Hawk.put("selectedLang","tr")}
@@ -77,7 +77,7 @@ class SettingsFragment : Fragment() {
                     binding.tvSelectLanguage.setText(selectedItem)
                     Hawk.put("selectedLanguage",selectedItem)
                 }
-                .setNegativeButton("İptal"){dialog,which->
+                .setNegativeButton(R.string.btn_negative){dialog,which->
 
                 }.show()
         }
@@ -85,7 +85,7 @@ class SettingsFragment : Fragment() {
 
     private fun loadDatas(){
         val value = Hawk.get("mode",false)
-        val selectedLanguage = Hawk.get("selectedLanguage","")
+        val selectedLanguage = Hawk.get("selectedLanguage","Türkçe")
         println(selectedLanguage)
         if(value){
             binding.button.isChecked = true
