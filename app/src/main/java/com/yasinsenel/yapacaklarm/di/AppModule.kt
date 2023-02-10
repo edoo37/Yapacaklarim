@@ -32,7 +32,7 @@ object AppModule {
     fun injectRoomDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
             context,TodoDatabase::class.java,"tododatabase"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
 
 
     @Singleton

@@ -11,15 +11,15 @@
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_mainFragment_to_addTaskFragment"
-            app:destination="@id/addTaskFragment"/>
+            app:destination="@id/addTaskFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="false"/>
         <action
             android:id="@+id/action_mainFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <action
             android:id="@+id/action_mainFragment_self"
-            app:destination="@id/mainFragment"
-            app:popUpTo="@id/mainFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_mainFragment_to_updateItemFragment"
             app:destination="@id/updateItemFragment" />
@@ -32,9 +32,7 @@
 
         <action
             android:id="@+id/action_addTaskFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:popUpTo="@id/addTaskFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -51,5 +49,9 @@
         android:id="@+id/updateItemFragment"
         android:name="com.yasinsenel.yapacaklarm.view.fragment.UpdateItemFragment"
         android:label="fragment_update_item"
-        tools:layout="@layout/fragment_update_item" />
+        tools:layout="@layout/fragment_update_item" >
+        <action
+            android:id="@+id/action_updateItemFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
 </navigation>
