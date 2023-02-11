@@ -22,4 +22,6 @@
     <string name="txt_about">Bu uygulama günlük yapacağınız görevlerin kaydının tutulması ve hatırlatılması için düzenlenmiştir.\n
     Created by Yasin Şenel\n
     Bizi Play Storeda oylayın!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
