@@ -15,7 +15,7 @@ import com.yasinsenel.yapacaklarm.R
 
 
 class NotificationHelper(val context : Context) {
-    private val CHANNEL_ID = "reminder_channel_id31"
+    private val CHANNEL_ID = "reminder_channel_id"
     private val NOTIFICATION_ID = 1
 
     private fun createNotificationChannel(){
@@ -25,7 +25,7 @@ class NotificationHelper(val context : Context) {
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .build()
             val asd = Uri.parse("android.resource://"
-                    + context.getPackageName() + "/" + R.raw.su)
+                    + context.getPackageName() + "/" + R.raw.notification_sound)
             val channel = NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT ).apply {
                 description = "Reminder Channel Description"
                 setSound(asd,audioAttributes)

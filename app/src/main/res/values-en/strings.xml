@@ -20,4 +20,7 @@
     <string name="btn_positive">YES</string>
     <string name="btn_negative">CANCEL</string>
     <string name="txt_title">Change Language</string>
+    <string name="txt_about">This application is designed to keep track of your daily tasks and remind them.\n
+    Created by Yasin Şenel\n
+    Rate us on Google Play Store</string>
 </resources>
