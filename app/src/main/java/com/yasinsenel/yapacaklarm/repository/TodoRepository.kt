@@ -8,27 +8,15 @@ import com.yasinsenel.yapacaklarm.service.ImagesAPI
 import com.yasinsenel.yapacaklarm.utils.Resource
 import javax.inject.Inject
 
-class TodoRepository @Inject constructor(private val api : ImagesAPI ,private val todoDAO: TodoDAO) {
-    suspend fun getImageResponse(categoryName : String) : Resource<UnsplashModel>{
-        val response = try {
-            api.getData(categoryName)
+interface TodoRepository  {
+    suspend fun getImageResponse(categoryName : String) : Resource<UnsplashModel>
 
-        }catch (t : Throwable){
-            return Resource.Error(t.message.toString())
-        }
-        return Resource.Success(response)
-    }
-    suspend fun gettAllData() : MutableList<TodoData> {
-        val list = todoDAO.gettAllList()
-        return list
-    }
-    suspend fun insertItem(todoData: TodoData){
-        todoDAO.insertItem(todoData)
-    }
-    suspend fun deleteItem(todoData: TodoData){
-        todoDAO.deleteItem(todoData)
-    }
-    suspend fun updateItem(todoData: TodoData){
-        todoDAO.updateItem(todoData)
-    }
+    suspend fun gettAllData() : MutableList<TodoData>
+
+    suspend fun insertItem(todoData: TodoData)
+
+    suspend fun deleteItem(todoData: TodoData)
+
+    suspend fun updateItem(todoData: TodoData)
+
 }

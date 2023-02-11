@@ -194,7 +194,7 @@ class AddTaskFragment : Fragment() {
             val currentDateTime = Calendar.getInstance()
             println(currentDateTime.time)
             val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
-            requireContext().createWorkRequest(edtTaskName.text.toString(),timee,randomString)
+            requireContext().createWorkRequest(edtTaskName.text.toString(),edtTaskDesc.text.toString(),timee,randomString)
             findNavController().popBackStack()
         }
     }

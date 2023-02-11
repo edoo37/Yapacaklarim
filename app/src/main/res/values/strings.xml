@@ -19,4 +19,7 @@
     <string name="btn_positive">TAMAM</string>
     <string name="btn_negative">İPTAL</string>
     <string name="txt_title">Dili Değiştir</string>
+    <string name="txt_about">Bu uygulama günlük yapacağınız görevlerin kaydının tutulması ve hatırlatılması için düzenlenmiştir.\n
+    Created by Yasin Şenel\n
+    Bizi Play Storeda oylayın!</string>
 </resources>

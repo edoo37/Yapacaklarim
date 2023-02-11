@@ -20,12 +20,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-fun Context.createWorkRequest(message: String, timeDelayInSeconds: Long, randomString:String) {
+fun Context.createWorkRequest(title: String,message:String, timeDelayInSeconds: Long, randomString:String) {
     val myWorkRequest = OneTimeWorkRequestBuilder<RemindWorker>()
         .setInitialDelay(timeDelayInSeconds, TimeUnit.SECONDS)
         .setInputData(
             workDataOf(
-                "title" to "Reminder",
+                "title" to title,
                 "message" to message,
             )
         ).addTag(randomString)

@@ -147,7 +147,7 @@ class UpdateItemFragment : Fragment() {
             val list = TodoData(binding.edtTaskName.text.toString(),binding.edtTaskDesc.text.toString(),date,time,uriString,randomString,getid)
             mainFragmentViewModel.updateItem(list)
             requireContext().removeWorkReqeust(getString!!)
-            requireContext().createWorkRequest(binding.edtTaskName.text.toString(),timee,randomString)
+            requireContext().createWorkRequest(binding.edtTaskName.text.toString(),binding.edtTaskDesc.text.toString(),timee,randomString)
             findNavController().popBackStack()
         }
 

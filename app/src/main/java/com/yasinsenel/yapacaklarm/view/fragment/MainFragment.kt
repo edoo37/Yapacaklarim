@@ -124,12 +124,11 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.about -> {
-                        // clearCompletedTasks()
+                        Navigation.findNavController(requireView()).navigate(R.id.action_mainFragment_to_aboutFragment)
                         true
                     }
                     R.id.settings -> {
-
-                        Navigation.findNavController(binding.root).navigate(R.id.action_mainFragment_to_settingsFragment)
+                        Navigation.findNavController(requireView()).navigate(R.id.action_mainFragment_to_settingsFragment)
                         true
                     }
                     else -> false

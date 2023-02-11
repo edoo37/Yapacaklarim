@@ -1,19 +1,18 @@
 package com.yasinsenel.yapacaklarm.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.model.UnsplashModel
-import com.yasinsenel.yapacaklarm.repository.TodoRepository
+import com.yasinsenel.yapacaklarm.repository.TodoRepositoryImp
 import com.yasinsenel.yapacaklarm.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainFragmentViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
+class MainFragmentViewModel @Inject constructor(private val repository: TodoRepositoryImp) : ViewModel() {
     val getImageData = MutableLiveData<UnsplashModel?>()
 
     val getRoomList = MutableLiveData<MutableList<TodoData>?>()
