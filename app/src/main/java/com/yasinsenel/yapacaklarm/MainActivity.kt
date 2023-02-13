@@ -1,11 +1,16 @@
 package com.yasinsenel.yapacaklarm
 
+import android.R
+import android.app.PendingIntent.getActivity
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.databinding.ActivityMainBinding
+
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -15,6 +20,7 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
 
         Hawk.init(this).build()
 
@@ -34,5 +40,6 @@ class MainActivity : BaseActivity() {
         config.setLocale(locale)
         this.resources.updateConfiguration(config,this.resources.displayMetrics)
     }
+
 
 }

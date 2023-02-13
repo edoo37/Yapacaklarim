@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "995859140541",
+    "project_id": "yapacaklarim-14c9c",
+    "storage_bucket": "yapacaklarim-14c9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995859140541:android:3ecedc692fff74bc3eccd4",
+        "android_client_info": {
+          "package_name": "com.yasinsenel.yapacaklarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "995859140541-nlcgmab84616rtrh16tpkbvgr68mocfp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAOZkUdc1iLgU4ts783SztXH4FfeKHS-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "995859140541-nlcgmab84616rtrh16tpkbvgr68mocfp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

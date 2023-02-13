@@ -20,7 +20,7 @@ class TablayoutAdapter(fm : FragmentActivity, var totalTabs : Int) : FragmentSta
                 RegisterFragment()
             }
             else->{
-                LoginFragment()
+                RegisterFragment()
             }
         }
     }

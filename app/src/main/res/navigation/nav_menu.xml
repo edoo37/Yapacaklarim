@@ -68,12 +68,19 @@
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
-            android:id="@+id/action_splashFragment_to_loginRegisterFragment"
+            android:id="@+id/action_splashFragment_to_loginRegisterFragment2"
             app:destination="@id/loginRegisterFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginRegisterFragment"
         android:name="com.yasinsenel.yapacaklarm.view.fragment.LoginRegisterFragment"
         android:label="fragment_login_register"
-        tools:layout="@layout/fragment_login_register" />
+        tools:layout="@layout/fragment_login_register" >
+        <action
+            android:id="@+id/action_loginRegisterFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_loginRegisterFragment_self"
+            app:destination="@id/loginRegisterFragment" />
+    </fragment>
 </navigation>

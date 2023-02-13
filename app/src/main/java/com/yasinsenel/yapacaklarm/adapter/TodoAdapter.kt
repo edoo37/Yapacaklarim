@@ -24,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel,private val removeitem: removeItem) : RecyclerView.Adapter<TodoAdapter.Holder>() {
     private lateinit var binding : ItemsLayoutBinding
     private var itemList : MutableList<TodoData> = mutableListOf()
-    private var deneme : ArrayList<String> = arrayListOf()
+
 
     interface removeItem{
         fun deleteItem(position: Int)
