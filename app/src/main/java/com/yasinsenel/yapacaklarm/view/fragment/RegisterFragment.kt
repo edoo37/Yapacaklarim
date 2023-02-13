@@ -1,60 +1,78 @@
 package com.yasinsenel.yapacaklarm.view.fragment
 
+
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.get
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.yasinsenel.yapacaklarm.R
+import com.yasinsenel.yapacaklarm.databinding.FragmentRegisterBinding
+import com.yasinsenel.yapacaklarm.model.RegisterDataModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RegisterFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RegisterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class RegisterFragment() : Fragment(){
+
+    private lateinit var auth : FirebaseAuth
+    private lateinit var binding : FragmentRegisterBinding
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        auth = Firebase.auth
+        database = Firebase.database.reference
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false)
+        binding = FragmentRegisterBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RegisterFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RegisterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.apply {
+            btnConfirm.setOnClickListener {
+                writeNewUser(binding.edtUsername.text.toString(),binding.edtEmail.text.toString(),binding.edtPassword.text.toString())
+               /* auth.createUserWithEmailAndPassword(binding.edtUsername.text.toString(),binding.edtPassword.text.toString())
+                    .addOnCompleteListener {
+                        if(it.isSuccessful){
+                            val user = auth.currentUser
+                            user?.sendEmailVerification()?.addOnCompleteListener {
+                                if(it.isSuccessful){
+                                    Toast.makeText(requireContext(),"E-Mail Doğrulayın.",Toast.LENGTH_SHORT).show()
+                                    writeNewUser(binding.edtUsername.text.toString(),binding.edtEmail.text.toString(),binding.edtPassword.text.toString())
+                                    val tabs = activity?.findViewById<ViewPager2>(R.id.viewPager)
+                                    tabs?.currentItem = 0
+                                }
+                            }
+
+                        }
+                        else{
+                            Toast.makeText(requireContext(),it.exception.toString(),Toast.LENGTH_SHORT).show()
+                        }
+                    }*/
             }
+        }
+
     }
+
+    fun writeNewUser(name: String, email: String, password : String) {
+        val user = RegisterDataModel(name,email)
+        val key = database.child("posts").push().key!!
+        database.child("users").child(key).setValue(user)
+    }
+
 }

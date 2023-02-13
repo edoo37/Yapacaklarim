@@ -9,6 +9,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
@@ -17,10 +18,14 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
@@ -45,8 +50,10 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private val filteredList : MutableList<TodoData> = mutableListOf()
     private val list : ArrayList<String> = arrayListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
+    private lateinit var auth : FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
 
 
     }
@@ -68,9 +75,13 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         Hawk.init(requireContext()).build()
 
         checkAppMode()
+        getFirebaseUser()
 
-        val asd : String? = null
-        println(asd.toString())
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        })
 
 
 
@@ -85,7 +96,9 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             setAdapter()
         }
 
-
+        binding.ivUser.setOnClickListener {
+            auth.signOut()
+        }
 
 
 
@@ -265,5 +278,9 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         else{
             binding.tvEmpty.visibility = View.INVISIBLE
         }
+    }
+    private fun getFirebaseUser(){
+        val user = auth.currentUser
+        binding.tvUsername.text = user?.email
     }
 }

@@ -24,7 +24,7 @@ class SplashFragment : Fragment() {
     ): View? {
 
         Handler(Looper.getMainLooper()!!).postDelayed({
-            findNavController().navigate(R.id.action_splashFragment_to_loginRegisterFragment)
+            findNavController().navigate(R.id.action_splashFragment_to_loginRegisterFragment2)
         },2300)
 
         binding = FragmentSplashBinding.inflate(inflater,container,false)
