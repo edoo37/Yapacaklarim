@@ -23,4 +23,14 @@
     <string name="txt_about">This application is designed to keep track of your daily tasks and remind them.\n
     Created by Yasin Şenel\n
     Rate us on Google Play Store</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_register">REGISTER</string>
+    <string name="txt_username">Enter a Username</string>
+    <string name="txt_email">Enter an E-Mail</string>
+    <string name="txt_password">Enter Password</string>
+    <string name="txt_tblayout_login">Login</string>
+    <string name="txt_tblayout_register">Register</string>
+    <string name="txt_wrong_password">Wrong Password...</string>
+    <string name="txt_registered_user">Registered User...</string>
+    <string name="txt_logout">Logout</string>
 </resources>

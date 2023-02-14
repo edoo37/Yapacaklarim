@@ -16,12 +16,13 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.yasinsenel.yapacaklarm.MainActivity
+import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.adapter.TablayoutAdapter
 import com.yasinsenel.yapacaklarm.databinding.FragmentLoginRegisterBinding
 
 
 class LoginRegisterFragment : Fragment() {
-    private lateinit var binding: FragmentLoginRegisterBinding
+    private var binding : FragmentLoginRegisterBinding? = null
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +36,7 @@ class LoginRegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentLoginRegisterBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
 
 
     }
@@ -43,7 +44,6 @@ class LoginRegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setAdapter()
-        val database = Firebase.database.reference
 
 
     }
@@ -57,15 +57,20 @@ class LoginRegisterFragment : Fragment() {
     }
 
     fun setAdapter() {
-        val tabArrayList = arrayOf("Login", "Register")
+        val tabArrayList = arrayOf(getString(R.string.txt_tblayout_login), getString(R.string.txt_tblayout_register))
         val adapter = TablayoutAdapter(requireActivity(), tabArrayList.size)
-        binding.apply {
+        binding!!.apply {
             viewPager.adapter = adapter
 
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = tabArrayList[position]
             }.attach()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
 }
