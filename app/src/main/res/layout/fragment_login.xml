@@ -7,11 +7,12 @@
     tools:context=".view.fragment.LoginFragment">
 
     <EditText
-        android:id="@+id/edt_username"
+        android:id="@+id/edt_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="Enter Username"
+        android:hint="@string/txt_email"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,10 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="Password"
+        android:hint="@string/txt_password"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_username" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_email" />
 
 
     <com.google.android.material.button.MaterialButton
@@ -32,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        android:text="LOGIN"
+        android:text="@string/btn_login"
         app:cornerRadius="8dp"
         android:layout_margin="10dp"
         android:backgroundTint="#00E1FF"

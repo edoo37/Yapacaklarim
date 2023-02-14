@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_mainFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_loginRegisterFragment"
+            app:destination="@id/loginRegisterFragment" />
     </fragment>
     <fragment
         android:id="@+id/addTaskFragment"
@@ -78,9 +81,10 @@
         tools:layout="@layout/fragment_login_register" >
         <action
             android:id="@+id/action_loginRegisterFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-        <action
-            android:id="@+id/action_loginRegisterFragment_self"
-            app:destination="@id/loginRegisterFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/loginRegisterFragment"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
 </navigation>

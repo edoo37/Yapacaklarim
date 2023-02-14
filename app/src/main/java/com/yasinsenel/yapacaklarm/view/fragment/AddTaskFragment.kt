@@ -54,7 +54,6 @@ class AddTaskFragment : Fragment() {
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
-
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
                 override fun handleOnBackPressed() {
                     if(uri != null){
@@ -173,10 +172,12 @@ class AddTaskFragment : Fragment() {
             val time = edtTime.text.toString()
             val randomString = UUID.randomUUID().toString().substring(0,15)
             var uriString  : String? = null
+            val args = arguments
+            val userId = args?.getString("userid")
             if(uri != null){
                 uriString = uri.toString()
             }
-            val list = TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString,randomString)
+            val list = TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString,randomString, userId)
             mainFragmentViewModel.addItem(list)
 
 

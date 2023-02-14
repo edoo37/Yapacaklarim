@@ -4,6 +4,7 @@ import android.R
 import android.app.PendingIntent.getActivity
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.databinding.ActivityMainBinding
@@ -22,6 +23,7 @@ class MainActivity : BaseActivity() {
         setContentView(view)
 
 
+
         Hawk.init(this).build()
 
         val selectedLanguage = Hawk.get("selectedLanguage","")
@@ -29,6 +31,7 @@ class MainActivity : BaseActivity() {
             "English"->loadLocale("en")
             "Türkçe"->loadLocale("tr")
         }
+
 
     }
 
@@ -40,6 +43,5 @@ class MainActivity : BaseActivity() {
         config.setLocale(locale)
         this.resources.updateConfiguration(config,this.resources.displayMetrics)
     }
-
 
 }
