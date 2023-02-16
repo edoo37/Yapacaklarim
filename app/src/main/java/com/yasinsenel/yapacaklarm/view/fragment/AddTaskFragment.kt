@@ -180,7 +180,7 @@ class AddTaskFragment : Fragment() {
             val list = TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString,randomString, userId)
             mainFragmentViewModel.addItem(list)
 
-
+            // WORKMANAGER ISLEMLERI
             val splipt = date.split(".")
             val year = splipt.get(2).toInt()
             val month = splipt.get(1).toInt()  - 1
@@ -193,7 +193,6 @@ class AddTaskFragment : Fragment() {
             userSelectedDateTime.set(year,month,day,hour,minute)
 
             val currentDateTime = Calendar.getInstance()
-            println(currentDateTime.time)
             val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
             requireContext().createWorkRequest(edtTaskName.text.toString(),edtTaskDesc.text.toString(),timee,randomString)
             findNavController().popBackStack()

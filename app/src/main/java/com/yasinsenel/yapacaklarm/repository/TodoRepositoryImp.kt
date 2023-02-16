@@ -18,8 +18,8 @@ class TodoRepositoryImp @Inject constructor(private val api : ImagesAPI ,private
         return Resource.Success(response)
     }
 
-    override suspend fun gettAllData(): MutableList<TodoData> {
-        val list = todoDAO.gettAllList()
+    override suspend fun gettAllData(userId : String): MutableList<TodoData> {
+        val list = todoDAO.gettAllList(userId)
         return list
     }
 

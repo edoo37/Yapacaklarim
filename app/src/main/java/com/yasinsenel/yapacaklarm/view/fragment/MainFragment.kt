@@ -2,7 +2,7 @@ package com.yasinsenel.yapacaklarm.view.fragment
 
 import android.content.ContentResolver
 import android.content.res.Configuration
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,25 +10,26 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.net.toUri
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Database
 import androidx.work.*
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
@@ -41,14 +42,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.File
+import java.lang.reflect.Field
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 @AndroidEntryPoint
 class MainFragment : Fragment(), TodoAdapter.removeItem {
-    private var binding : FragmentMainBinding? = null
+    private lateinit var binding : FragmentMainBinding
     private lateinit var todoAdapter : TodoAdapter
     private var setList : MutableList<TodoData>? = mutableListOf()
     private var newList : MutableList<TodoData>? = mutableListOf()
@@ -57,11 +58,13 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
     private lateinit var auth : FirebaseAuth
     private lateinit var database : DatabaseReference
+    private lateinit var db : FirebaseFirestore
     private var userData : Array<String>?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
-
+        db = Firebase.firestore
+        database = Firebase.database.reference
 
     }
 
@@ -70,18 +73,20 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         savedInstanceState: Bundle?
     ): View? {
 
-
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        Log.d("myview",binding.toString())
-        return binding!!.root
+        return binding.root
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Hawk.init(requireContext()).build()
 
         checkAppMode()
+
+
+
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
@@ -91,31 +96,32 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
 
 
+        val args = arguments
+        val bundle = args?.getStringArray("sendUserData")
+        binding!!.tvUsername.text = bundle?.get(0)
 
         todoAdapter = TodoAdapter(mainFragmentViewModel,this@MainFragment)
         getImageFromAPI()
-        mainFragmentViewModel.getAllData()
+        mainFragmentViewModel.getAllData(auth.currentUser!!.uid)
         mainFragmentViewModel.getRoomList.observe(viewLifecycleOwner) {
             it?.let {
                 setList = it
                 println(it)
             }
-            database = Firebase.database.reference
-            var exampleArray = setList?.toList()
-            newList = exampleArray?.filter { it.userId == auth.currentUser?.uid }?.toMutableList()
-            database.child("users").child(auth.currentUser?.uid!!).child("todoList").setValue(newList)
-            setAdapter(newList)
+            setList?.forEach {
+                db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayUnion(it))
+            }
+            setAdapter(setList)
         }
 
-        val args = arguments
-        val bundle = args?.getStringArray("sendUserData")
-        binding!!.tvUsername.text = bundle?.get(0)
 
 
 
 
 
-        binding!!.recyclerView.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
+
+
+        binding.recyclerView.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
             override fun onChildViewAttachedToWindow(view: View) {
                //binding.tvEmpty.visibility = View.INVISIBLE
             }
@@ -127,13 +133,13 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
         })
 
-        binding!!.ivUser.setOnClickListener {
+        binding.ivUser.setOnClickListener {
             auth.signOut()
             Navigation.findNavController(requireView()).navigate(R.id.action_mainFragment_to_loginRegisterFragment)
         }
 
 
-        binding!!.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -144,7 +150,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         })
 
 
-        val toolbar = binding!!.toolbar
+        val toolbar = binding.toolbar
 
         toolbar.inflateMenu(R.menu.main_menu)
         toolbar.setOnMenuItemClickListener {
@@ -195,9 +201,8 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
         })*/
 
-        binding!!.fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             val user = auth.currentUser?.uid
-            println(user)
             val bundle = Bundle()
             bundle.putString("userid",user)
             Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_addTaskFragment,bundle)
@@ -208,17 +213,17 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
     private fun setAdapter(setmyList : MutableList<TodoData>?){
 
-        binding!!.apply {
+        binding.apply {
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
             recyclerView.adapter = todoAdapter
             todoAdapter.setNewList(setmyList!!)
             todoAdapter.setData(setmyList!!)
 
-            if(setmyList!!.size>0){
-                binding!!.tvEmpty.visibility = View.INVISIBLE
+            if(setmyList.size>0){
+                binding.tvEmpty.visibility = View.INVISIBLE
             }
             else{
-                binding!!.tvEmpty.visibility = View.VISIBLE
+                binding.tvEmpty.visibility = View.VISIBLE
             }
 
         }
@@ -252,7 +257,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
     private fun search(text : String?){
         filteredList.clear()
-        println(list)
         if(text?.length!! >=3){
             setList?.forEach {
                 if(it.todoName?.lowercase()!!.startsWith(text.lowercase())){
@@ -272,10 +276,9 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         mainFragmentViewModel.getWeatherData("nature")
         mainFragmentViewModel.getImageData.observe(viewLifecycleOwner){
             it?.let {
-                println(it.alt_description)
                 Glide.with(requireContext())
                     .load(it.urls.full)
-                    .into(binding!!.ivMain)
+                    .into(binding.ivMain)
             }
         }
     }
@@ -296,8 +299,8 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                     val day = split.get(0)
                     val dayNum = split.get(1)
                     val dayTime = split.get(3)
-                    binding!!.tvDate.text = day + dayNum
-                    binding!!.tvTime.text = dayTime
+                    binding.tvDate.text = day + dayNum
+                    binding.tvTime.text = dayTime
                     Handler(Looper.getMainLooper()).postDelayed(this,60000)
                 }
 
@@ -308,33 +311,31 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     }
 
     override fun deleteItem(position: Int) {
-        val getData = newList?.get(position)
-        requireContext().removeWorkReqeust(newList?.get(position)?.randomString!!)
-        val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
-        listRef.child(position.toString()).removeValue()
+        val getData = setList?.get(position)
+        requireContext().removeWorkReqeust(setList?.get(position)?.randomString!!)
+        //val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
+        //listRef.child(position.toString()).removeValue()
+        db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayRemove(getData))
         mainFragmentViewModel.deleteItem(getData!!)
 
-        val getUri = newList?.get(position)?.todoImage
+
+        val getUri = setList?.get(position)?.todoImage
         if(getUri != null){
             val contentResolver: ContentResolver = requireActivity().getContentResolver()
             contentResolver.delete(getUri.toUri(), null, null)
         }
-        newList?.removeAt(position)
+        setList?.removeAt(position)
         todoAdapter.notifyItemRemoved(position)
-        todoAdapter.notifyItemRangeChanged(position,newList!!.size)
+        todoAdapter.notifyItemRangeChanged(position,setList!!.size)
         Toast.makeText(context,R.string.txt_delete_message, Toast.LENGTH_SHORT).show()
-        if(newList?.size==0){
-            binding!!.tvEmpty.visibility = View.VISIBLE
+        if(setList?.size==0){
+            binding.tvEmpty.visibility = View.VISIBLE
         }
         else{
-            binding!!.tvEmpty.visibility = View.INVISIBLE
+            binding.tvEmpty.visibility = View.INVISIBLE
         }
     }
 
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
 
 }

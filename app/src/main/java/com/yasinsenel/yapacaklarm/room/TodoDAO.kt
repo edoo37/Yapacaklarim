@@ -13,8 +13,8 @@ interface TodoDAO {
     @Delete
     suspend fun deleteItem(todoData: TodoData)
 
-    @Query("SELECT * FROM tododata")
-    suspend fun gettAllList() : MutableList<TodoData>
+    @Query("SELECT * FROM tododata WHERE userId = :userId")
+    suspend fun gettAllList(userId : String) : MutableList<TodoData>
 
     @Update
     suspend fun updateItem(todoData: TodoData)

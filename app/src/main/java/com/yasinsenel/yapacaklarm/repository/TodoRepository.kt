@@ -11,7 +11,7 @@ import javax.inject.Inject
 interface TodoRepository  {
     suspend fun getImageResponse(categoryName : String) : Resource<UnsplashModel>
 
-    suspend fun gettAllData() : MutableList<TodoData>
+    suspend fun gettAllData(userId : String) : MutableList<TodoData>
 
     suspend fun insertItem(todoData: TodoData)
 

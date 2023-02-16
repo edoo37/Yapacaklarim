@@ -52,7 +52,7 @@ class NotificationHelper(val context : Context) {
             .setContentTitle(title)
             .setContentText(message)
             .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
         // 6
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)

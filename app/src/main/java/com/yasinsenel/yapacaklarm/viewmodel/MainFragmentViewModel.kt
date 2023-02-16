@@ -19,9 +19,9 @@ class MainFragmentViewModel @Inject constructor(private val repository: TodoRepo
 
 
     //Main Fragment
-    fun getAllData(){
+    fun getAllData(userId : String){
         viewModelScope.launch {
-            val result = repository.gettAllData()
+            val result = repository.gettAllData(userId)
             getRoomList.value = result
         }
     }

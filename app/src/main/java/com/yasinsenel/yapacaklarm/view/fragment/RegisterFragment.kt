@@ -15,6 +15,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.FragmentRegisterBinding
@@ -26,11 +28,12 @@ class RegisterFragment() : Fragment(){
     private lateinit var auth : FirebaseAuth
     private var binding : FragmentRegisterBinding? = null
     private lateinit var database: DatabaseReference
-
+    private lateinit var db : FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         database = Firebase.database.reference
+        db = Firebase.firestore
 
     }
 
@@ -44,14 +47,16 @@ class RegisterFragment() : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding!!.apply {
             btnConfirm.setOnClickListener {
                 auth.createUserWithEmailAndPassword(binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString())
                     .addOnCompleteListener {
                         if(it.isSuccessful){
                             val user = auth.currentUser
-                            val userId = user?.uid
-                            writeNewUser(userId!!,binding!!.edtUsername.text.toString(),binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString())
+                            val userId = user?.uid!!
+                            writeUserToFiresstore(userId,binding!!.edtUsername.text.toString(),binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString())
+                            //writeNewUser(userId,binding!!.edtUsername.text.toString(),binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString())
 
                         }
                         else{
@@ -84,6 +89,24 @@ class RegisterFragment() : Fragment(){
                 }
 
             })
+    }
+    fun writeUserToFiresstore(userId:String,name: String, email: String, password : String){
+        val user = hashMapOf(
+            "userId" to userId,
+            "name" to name,
+            "email" to email,
+            "password" to password
+        )
+        db.collection("users")
+            .document(userId)
+            .set(user)
+            .addOnSuccessListener {
+                val tabs = activity?.findViewById<ViewPager2>(R.id.viewPager)
+                tabs?.currentItem = 0
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_SHORT).show()
+            }
     }
     override fun onDestroyView() {
         super.onDestroyView()
