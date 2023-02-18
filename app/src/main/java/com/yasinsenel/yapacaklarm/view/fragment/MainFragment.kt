@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -15,7 +14,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,13 +22,16 @@ import androidx.work.*
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
@@ -42,7 +43,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.reflect.Field
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,19 +52,20 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private lateinit var binding : FragmentMainBinding
     private lateinit var todoAdapter : TodoAdapter
     private var setList : MutableList<TodoData>? = mutableListOf()
-    private var newList : MutableList<TodoData>? = mutableListOf()
     private val filteredList : MutableList<TodoData> = mutableListOf()
-    private val list : ArrayList<String> = arrayListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
     private lateinit var auth : FirebaseAuth
     private lateinit var database : DatabaseReference
     private lateinit var db : FirebaseFirestore
-    private var userData : Array<String>?=null
+    private lateinit var storage : StorageReference
+    private var createStorageRef : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         db = Firebase.firestore
         database = Firebase.database.reference
+        storage = Firebase.storage.reference
+
 
     }
 
@@ -86,6 +87,10 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         checkAppMode()
 
 
+        Firebase.crashlytics.setUserId(auth.currentUser!!.uid)
+
+
+        setFrag(auth.currentUser!!.uid)
 
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
@@ -109,8 +114,13 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                 println(it)
             }
             setList?.forEach {
+                if(it.todoImage != null){
+                    createStorageRef = "images/${it.userId}/${it.todoName}/${it.todoImage?.split("/")?.last()}"
+                    storage.child(createStorageRef!!).putFile(it.todoImage!!.toUri())
+                }
                 db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayUnion(it))
             }
+
             setAdapter(setList)
         }
 
@@ -133,10 +143,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
         })
 
-        binding.ivUser.setOnClickListener {
-            auth.signOut()
-            Navigation.findNavController(requireView()).navigate(R.id.action_mainFragment_to_loginRegisterFragment)
-        }
 
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -217,7 +223,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
             recyclerView.adapter = todoAdapter
             todoAdapter.setNewList(setmyList!!)
-            todoAdapter.setData(setmyList!!)
+            todoAdapter.setData(setmyList)
 
             if(setmyList.size>0){
                 binding.tvEmpty.visibility = View.INVISIBLE
@@ -316,6 +322,13 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         //val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
         //listRef.child(position.toString()).removeValue()
         db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayRemove(getData))
+        //storage.child(createStorageRef!!).delete()
+            .addOnSuccessListener {
+             println(it)
+        }
+            .addOnFailureListener {
+             println(it)
+        }
         mainFragmentViewModel.deleteItem(getData!!)
 
 
@@ -336,6 +349,18 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         }
     }
 
+    fun setFrag(userId : String){
+        storage.child("profile-images/${userId}")
+            .downloadUrl
+            .addOnSuccessListener {
+                Glide.with(requireContext())
+                    .load(it)
+                    .centerCrop()
+                    .into(binding.ivUser)
+            }
+            .addOnFailureListener {
 
+            }
+    }
 
 }
