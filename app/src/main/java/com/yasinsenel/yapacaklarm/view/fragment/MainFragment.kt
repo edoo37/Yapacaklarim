@@ -133,11 +133,11 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
         binding.recyclerView.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
             override fun onChildViewAttachedToWindow(view: View) {
-               //binding.tvEmpty.visibility = View.INVISIBLE
+                //binding.tvEmpty.visibility = View.INVISIBLE
             }
 
             override fun onChildViewDetachedFromWindow(view: View) {
-               //binding.tvEmpty.visibility = View.VISIBLE
+                //binding.tvEmpty.visibility = View.VISIBLE
 
             }
 
@@ -184,9 +184,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                     Toast.makeText(requireContext(),"asd",Toast.LENGTH_SHORT).show()
                     menuInflater.inflate(R.menu.main_menu,menu)
                 }
-
             }
-
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.about -> {
@@ -198,13 +196,11 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                         true
                     }
                     R.id.logout ->{
-
                         true
                     }
                     else -> false
                 }
             }
-
         })*/
 
         binding.fab.setOnClickListener {
@@ -322,13 +318,13 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         //val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
         //listRef.child(position.toString()).removeValue()
         db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayRemove(getData))
-        //storage.child(createStorageRef!!).delete()
+        storage.child(createStorageRef!!).delete()
             .addOnSuccessListener {
-             println(it)
-        }
+                println(it)
+            }
             .addOnFailureListener {
-             println(it)
-        }
+                println(it)
+            }
         mainFragmentViewModel.deleteItem(getData!!)
 
 

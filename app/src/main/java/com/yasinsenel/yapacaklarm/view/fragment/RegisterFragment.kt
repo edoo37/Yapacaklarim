@@ -70,7 +70,7 @@ class RegisterFragment() : Fragment(){
 
 
 
-    binding!!.apply {
+        binding!!.apply {
             btnConfirm.setOnClickListener {
                 auth.createUserWithEmailAndPassword(binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString())
                     .addOnCompleteListener {
@@ -92,7 +92,7 @@ class RegisterFragment() : Fragment(){
             ivProfileImage.setOnClickListener {
                 checkPermission()
                 if(isReadPermission)
-                imageLauncher.launch("image/*")
+                    imageLauncher.launch("image/*")
 
             }
 
@@ -101,10 +101,10 @@ class RegisterFragment() : Fragment(){
 
     }
     private val imageLauncher = registerForActivityResult(ActivityResultContracts.GetContent(),
-            ActivityResultCallback {
-                uri = it
-                binding?.ivProfileImage?.setImageURI(uri)
-            })
+        ActivityResultCallback {
+            uri = it
+            binding?.ivProfileImage?.setImageURI(uri)
+        })
     fun writeNewUser(userId:String,name: String, email: String, password : String) {
         val user = RegisterDataModel(name,email,password)
         val dbRef = database.child("users").child(userId)
