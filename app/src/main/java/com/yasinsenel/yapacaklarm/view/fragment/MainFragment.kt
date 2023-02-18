@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,11 +25,11 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -43,6 +45,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.reflect.Field
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,7 +55,9 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private lateinit var binding : FragmentMainBinding
     private lateinit var todoAdapter : TodoAdapter
     private var setList : MutableList<TodoData>? = mutableListOf()
+    private var newList : MutableList<TodoData>? = mutableListOf()
     private val filteredList : MutableList<TodoData> = mutableListOf()
+    private val list : ArrayList<String> = arrayListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
     private lateinit var auth : FirebaseAuth
     private lateinit var database : DatabaseReference
@@ -65,7 +70,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         db = Firebase.firestore
         database = Firebase.database.reference
         storage = Firebase.storage.reference
-
 
     }
 
@@ -86,11 +90,10 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
         checkAppMode()
 
-
         Firebase.crashlytics.setUserId(auth.currentUser!!.uid)
-
-
         setFrag(auth.currentUser!!.uid)
+
+
 
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
@@ -114,13 +117,12 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                 println(it)
             }
             setList?.forEach {
-                if(it.todoImage != null){
+                if(it.todoImage!=null){
                     createStorageRef = "images/${it.userId}/${it.todoName}/${it.todoImage?.split("/")?.last()}"
                     storage.child(createStorageRef!!).putFile(it.todoImage!!.toUri())
                 }
                 db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayUnion(it))
             }
-
             setAdapter(setList)
         }
 
@@ -133,15 +135,16 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
         binding.recyclerView.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
             override fun onChildViewAttachedToWindow(view: View) {
-                //binding.tvEmpty.visibility = View.INVISIBLE
+               //binding.tvEmpty.visibility = View.INVISIBLE
             }
 
             override fun onChildViewDetachedFromWindow(view: View) {
-                //binding.tvEmpty.visibility = View.VISIBLE
+               //binding.tvEmpty.visibility = View.VISIBLE
 
             }
 
         })
+
 
 
 
@@ -184,7 +187,9 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                     Toast.makeText(requireContext(),"asd",Toast.LENGTH_SHORT).show()
                     menuInflater.inflate(R.menu.main_menu,menu)
                 }
+
             }
+
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.about -> {
@@ -196,11 +201,13 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                         true
                     }
                     R.id.logout ->{
+
                         true
                     }
                     else -> false
                 }
             }
+
         })*/
 
         binding.fab.setOnClickListener {
@@ -220,6 +227,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             recyclerView.adapter = todoAdapter
             todoAdapter.setNewList(setmyList!!)
             todoAdapter.setData(setmyList)
+            todoAdapter.setData(setmyList!!)
 
             if(setmyList.size>0){
                 binding.tvEmpty.visibility = View.INVISIBLE
@@ -318,15 +326,14 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         //val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
         //listRef.child(position.toString()).removeValue()
         db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayRemove(getData))
+        mainFragmentViewModel.deleteItem(getData!!)
         storage.child(createStorageRef!!).delete()
             .addOnSuccessListener {
-                println(it)
+
             }
             .addOnFailureListener {
-                println(it)
-            }
-        mainFragmentViewModel.deleteItem(getData!!)
 
+            }
 
         val getUri = setList?.get(position)?.todoImage
         if(getUri != null){
@@ -346,10 +353,10 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     }
 
     fun setFrag(userId : String){
-        storage.child("profile-images/${userId}")
+        storage.child("profile-image/${userId}")
             .downloadUrl
             .addOnSuccessListener {
-                Glide.with(requireContext())
+                Glide.with(requireView())
                     .load(it)
                     .centerCrop()
                     .into(binding.ivUser)
@@ -358,5 +365,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
             }
     }
+
+
 
 }
