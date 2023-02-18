@@ -1,12 +1,15 @@
 package com.yasinsenel.yapacaklarm.view.fragment
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -28,6 +31,7 @@ import com.yasinsenel.yapacaklarm.databinding.FragmentLoginRegisterBinding
 class LoginRegisterFragment : Fragment() {
     private var binding : FragmentLoginRegisterBinding? = null
     private lateinit var auth: FirebaseAuth
+    private var isReadPermission = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
@@ -54,6 +58,7 @@ class LoginRegisterFragment : Fragment() {
                 requireActivity().finish()
             }
         })
+
 
     }
 

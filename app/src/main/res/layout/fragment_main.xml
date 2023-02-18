@@ -83,7 +83,7 @@
             android:layout_height="60dp"
             android:layout_gravity="end|top"
             android:layout_margin="20dp"
-            android:src="@drawable/ic_launcher_background" />
+            android:src="@drawable/ic_avatar" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_username"
