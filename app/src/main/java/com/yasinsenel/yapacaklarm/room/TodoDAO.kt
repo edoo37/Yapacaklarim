@@ -16,7 +16,7 @@ interface TodoDAO {
     @Query("SELECT * FROM tododata WHERE userId = :userId")
     suspend fun gettAllList(userId : String) : MutableList<TodoData>
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateItem(todoData: TodoData)
 
 }

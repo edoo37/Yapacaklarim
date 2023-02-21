@@ -68,6 +68,7 @@ class UpdateItemFragment : Fragment() {
                         contentResolver.delete(uri!!, null, null)
                         findNavController().popBackStack()
                     }
+                    findNavController().popBackStack()
                 }
 
             })
@@ -120,6 +121,7 @@ class UpdateItemFragment : Fragment() {
 
         val getString = todoModel?.randomString
         val getUri = todoModel?.todoImage
+        val getUserId = todoModel?.userId
 
 
         binding.btnConfirm.setOnClickListener {
@@ -145,8 +147,7 @@ class UpdateItemFragment : Fragment() {
             val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
             val randomString = UUID.randomUUID().toString().substring(0,15)
             val args = arguments
-            val userMail = args?.getStringArray("email")
-            val list = TodoData(binding.edtTaskName.text.toString(),binding.edtTaskDesc.text.toString(),date,time,uriString,randomString,userMail?.get(0),getid)
+            val list = TodoData(binding.edtTaskName.text.toString(),binding.edtTaskDesc.text.toString(),date,time,uriString,randomString, getUserId,getid)
             mainFragmentViewModel.updateItem(list)
             requireContext().removeWorkReqeust(getString!!)
             requireContext().createWorkRequest(binding.edtTaskName.text.toString(),binding.edtTaskDesc.text.toString(),timee,randomString)
