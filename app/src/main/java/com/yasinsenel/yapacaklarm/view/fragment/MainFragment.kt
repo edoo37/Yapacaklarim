@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -14,14 +13,19 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
 import com.bumptech.glide.Glide
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
@@ -29,7 +33,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -37,6 +40,7 @@ import com.google.firebase.storage.ktx.storage
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
+import com.yasinsenel.yapacaklarm.analytics.AnalyticsTools
 import com.yasinsenel.yapacaklarm.databinding.FragmentMainBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.utils.removeWorkReqeust
@@ -45,7 +49,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.reflect.Field
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -63,6 +66,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private lateinit var database : DatabaseReference
     private lateinit var db : FirebaseFirestore
     private lateinit var storage : StorageReference
+    private lateinit var firebaseAnalytics : FirebaseAnalytics
     private var createStorageRef : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +74,8 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         db = Firebase.firestore
         database = Firebase.database.reference
         storage = Firebase.storage.reference
+        firebaseAnalytics = Firebase.analytics
+        MobileAds.initialize(requireContext())
 
     }
 
@@ -94,14 +100,14 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         setFrag(auth.currentUser!!.uid)
 
 
-
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 requireActivity().finish()
             }
         })
-
 
 
         val args = arguments
@@ -127,7 +133,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         }
 
 
-
+        AnalyticsTools.logCustomEvent("todoClick", bundleOf("Yaso" to "Senel"))
 
 
 
@@ -146,6 +152,10 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         })
 
 
+        firebaseAnalytics.logEvent("create_cargo") {
+            param("user_id", "1")
+            param("action_type", "videoCall")
+        }
 
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -320,29 +330,30 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
     }
 
-    override fun deleteItem(position: Int) {
-        val getData = setList?.get(position)
-        requireContext().removeWorkReqeust(setList?.get(position)?.randomString!!)
+    override fun deleteItem(data: Int, dataSize:Int) {
+        val getData = setList?.get(data)
+        requireContext().removeWorkReqeust(setList?.get(data)?.randomString!!)
         //val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
         //listRef.child(position.toString()).removeValue()
         db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayRemove(getData))
         mainFragmentViewModel.deleteItem(getData!!)
-        storage.child(createStorageRef!!).delete()
-            .addOnSuccessListener {
+        if(getData.todoImage!=null){
+            storage.child(createStorageRef!!).delete()
+                .addOnSuccessListener {
 
-            }
-            .addOnFailureListener {
+                }
+                .addOnFailureListener {
 
-            }
-
-        val getUri = setList?.get(position)?.todoImage
+                }
+        }
+        val getUri = setList?.get(data)?.todoImage
         if(getUri != null){
             val contentResolver: ContentResolver = requireActivity().getContentResolver()
             contentResolver.delete(getUri.toUri(), null, null)
         }
-        setList?.removeAt(position)
-        todoAdapter.notifyItemRemoved(position)
-        todoAdapter.notifyItemRangeChanged(position,setList!!.size)
+        setList?.removeAt(data)
+        todoAdapter.notifyItemRemoved(data)
+        todoAdapter.notifyItemRangeChanged(data,dataSize)
         Toast.makeText(context,R.string.txt_delete_message, Toast.LENGTH_SHORT).show()
         if(setList?.size==0){
             binding.tvEmpty.visibility = View.VISIBLE
@@ -353,7 +364,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     }
 
     fun setFrag(userId : String){
-        storage.child("profile-image/${userId}")
+        storage.child("profile-images/${userId}")
             .downloadUrl
             .addOnSuccessListener {
                 Glide.with(requireView())
