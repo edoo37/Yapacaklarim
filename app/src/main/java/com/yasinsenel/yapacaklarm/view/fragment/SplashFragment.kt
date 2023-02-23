@@ -34,13 +34,13 @@ class SplashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
     }
     private fun checkSplashCompleted(){
         val getHawkSplashData = Hawk.get("finishOb",false)
         if(getHawkSplashData){
-            Navigation.findNavController(requireView()).navigate(R.id.action_splashFragment_to_loginRegisterFragment)
+            Handler(Looper.getMainLooper()!!).postDelayed({
+                findNavController().navigate(R.id.action_splashFragment_to_loginRegisterFragment)
+            },2300)
         }
         else{
             Handler(Looper.getMainLooper()!!).postDelayed({
