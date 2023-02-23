@@ -32,4 +32,12 @@
     <string name="txt_wrong_password">Şifre Yanlış...</string>
     <string name="txt_registered_user">Kullanıcı Kayıtlı...</string>
     <string name="txt_logout">Çıkış Yap</string>
+    <string name="txt_ob_title1">PLANLARINIZI KAYDEDİN</string>
+    <string name="txt_ob_title2">KULLANICI DOSTU TASARIM</string>
+    <string name="txt_ob_title3">HADİ BAŞLAYALIM !</string>
+    <string name="txt_ob_desc1">Planlarınızı hatırlatılması için kaydedin.</string>
+    <string name="txt_ob_desc2">Kullanıcı dostu tasarımla planlarınızı kolayca yönetin.</string>
+    <string name="txt_ob_desc3">Uygulamayı deneyimlemek için başla!</string>
+    <string name="btn_ob_start">BAŞLAYIN</string>
+    <string name="txt_ob_skip">BİTİR</string>
 </resources>
