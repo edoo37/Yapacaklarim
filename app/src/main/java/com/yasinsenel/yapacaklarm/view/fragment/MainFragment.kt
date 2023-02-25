@@ -13,7 +13,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
@@ -39,8 +38,8 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
+import com.yasinsenel.yapacaklarm.UserDocument
 import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
-import com.yasinsenel.yapacaklarm.analytics.AnalyticsTools
 import com.yasinsenel.yapacaklarm.databinding.FragmentMainBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.utils.removeWorkReqeust
@@ -120,7 +119,14 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         mainFragmentViewModel.getRoomList.observe(viewLifecycleOwner) {
             it?.let {
                 setList = it
-                println(it)
+            }
+            if(it?.size!! == 0){
+                db.collection("users").document(auth.currentUser?.uid!!).get()
+                    .addOnSuccessListener {
+                        val users: List<TodoData>? = it.toObject(UserDocument::class.java)?.todoList
+                        setList = users?.toMutableList()
+                        setAdapter(setList)
+                    }
             }
             setList?.forEach {
                 if(it.todoImage!=null){
@@ -131,12 +137,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             }
             setAdapter(setList)
         }
-
-
-        AnalyticsTools.logCustomEvent("todoClick", bundleOf("Yaso" to "Senel"))
-
-
-
 
 
         binding.recyclerView.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
@@ -150,13 +150,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             }
 
         })
-
-
-        firebaseAnalytics.logEvent("create_cargo") {
-            param("user_id", "1")
-            param("action_type", "videoCall")
-        }
-
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
