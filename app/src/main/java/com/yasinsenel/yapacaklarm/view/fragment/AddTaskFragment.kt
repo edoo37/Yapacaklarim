@@ -15,10 +15,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.yasinsenel.yapacaklarm.R
+import com.yasinsenel.yapacaklarm.analytics.AnalyticsTools
 import com.yasinsenel.yapacaklarm.databinding.FragmentAddTaskBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.utils.createImageFile
@@ -191,10 +193,14 @@ class AddTaskFragment : Fragment() {
 
             val userSelectedDateTime = Calendar.getInstance()
             userSelectedDateTime.set(year,month,day,hour,minute)
-
+            //WORK MANAGER
             val currentDateTime = Calendar.getInstance()
             val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
             requireContext().createWorkRequest(edtTaskName.text.toString(),edtTaskDesc.text.toString(),timee,randomString)
+            //ANALYTICS
+            AnalyticsTools.logCustomEvent("eventTimes", bundleOf(userId.toString() to userSelectedDateTime.toString()))
+
+
             findNavController().popBackStack()
         }
     }
