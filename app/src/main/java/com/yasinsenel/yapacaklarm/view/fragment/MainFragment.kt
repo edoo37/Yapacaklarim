@@ -93,7 +93,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         super.onViewCreated(view, savedInstanceState)
         Hawk.init(requireContext()).build()
 
-        checkAppMode()
+        //checkAppMode()
 
         Firebase.crashlytics.setUserId(auth.currentUser!!.uid)
         setFrag(auth.currentUser!!.uid)
@@ -123,9 +123,14 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             if(it?.size!! == 0){
                 db.collection("users").document(auth.currentUser?.uid!!).get()
                     .addOnSuccessListener {
-                        val users: List<TodoData>? = it.toObject(UserDocument::class.java)?.todoList
-                        setList = users?.toMutableList()
-                        setAdapter(setList)
+                        if(it.exists()){
+                            if(it.get("todoList") !=null){
+                                val users: List<TodoData>? = it.toObject(UserDocument::class.java)?.todoList
+                                setList = users?.toMutableList()
+                                setAdapter(setList)
+                            }
+                        }
+
                     }
             }
             setList?.forEach {
@@ -369,7 +374,5 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
             }
     }
-
-
 
 }
