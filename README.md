@@ -8,6 +8,7 @@ Todo App, You can save, change and delete your daily plans using this app. View 
 - MVVM + Clean Architecture
 - Firebase Authenticate
 - Firebase Firestore (CRUD operations)
+- Firebase Analytics
 - Hilt
 - Navigation Component
 - Hawk (Shared Preferences)
@@ -15,3 +16,6 @@ Todo App, You can save, change and delete your daily plans using this app. View 
 - ViewModel
 - Coroutines
 - Repositories
+- Retrofit
+- Room Database
+
