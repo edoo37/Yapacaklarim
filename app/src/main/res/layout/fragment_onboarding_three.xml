@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F7D162"
-    tools:context=".view.fragment.OnboardingThreeFragment">
+    tools:context=".presentation.onboarding.OnboardingThreeFragment">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_finish"

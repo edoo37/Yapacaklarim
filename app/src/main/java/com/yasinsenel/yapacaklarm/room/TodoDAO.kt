@@ -3,6 +3,8 @@ package com.yasinsenel.yapacaklarm.room
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.yasinsenel.yapacaklarm.model.TodoData
+import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface TodoDAO {
@@ -14,7 +16,7 @@ interface TodoDAO {
     suspend fun deleteItem(todoData: TodoData)
 
     @Query("SELECT * FROM tododata WHERE userId = :userId")
-    suspend fun gettAllList(userId : String) : MutableList<TodoData>
+    fun gettAllList(userId : String) : MutableList<TodoData>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateItem(todoData: TodoData)

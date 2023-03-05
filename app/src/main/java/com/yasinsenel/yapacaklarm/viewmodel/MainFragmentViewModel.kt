@@ -1,43 +1,67 @@
 package com.yasinsenel.yapacaklarm.viewmodel
 
+import android.view.View
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yasinsenel.yapacaklarm.domain.usecase.*
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.model.UnsplashModel
-import com.yasinsenel.yapacaklarm.repository.TodoRepositoryImp
+import com.yasinsenel.yapacaklarm.domain.repository.TodoRepository
 import com.yasinsenel.yapacaklarm.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainFragmentViewModel @Inject constructor(private val repository: TodoRepositoryImp) : ViewModel() {
-    val getImageData = MutableLiveData<UnsplashModel?>()
+class MainFragmentViewModel @Inject constructor(
+    private val repository: TodoRepository,
+    private val getTodoUsecase: GetTodoUsecase,
+    private val insertTodoUsecase: InsertTodoUsecase,
+    private val updateTodoUsecase: UpdateTodoUsecase,
+    private val deleteTodoUsecase: DeleteTodoUsecase,
+    private val getApiDataUsecase: GetApiDataUsecase,
+    private val insertUserDataToFirestore: InsertUserDataToFirestore,
+    private val getUserDataFromFirestore: GetUserDataFromFirestore,
+    private val getAllDataFromFirestore: GetAllDataFromFirestore,
+    private val removeDataFromFirestore: RemoveDataFromFirestore,
+    private val insertTodoDataToFirestore: InsertTodoDataToFirestore
+) : ViewModel() {
 
-    val getRoomList = MutableLiveData<MutableList<TodoData>?>()
+
+
+    val _getImageData = MutableStateFlow<Resource<UnsplashModel>?>(null)
+    val getImageData : StateFlow<Resource<UnsplashModel>?> = _getImageData
+
+    val _getRoomList = MutableStateFlow<Resource<MutableList<TodoData>>?>(null)
+    val getRoomList : StateFlow<Resource<MutableList<TodoData>>?> = _getRoomList
+
+    val _getAllTodoDataFromFirestore = MutableSharedFlow<Resource<MutableList<TodoData>>?>(replay=0)
+    val getAllTodoDataFromFirestore : SharedFlow<Resource<MutableList<TodoData>>?> = _getAllTodoDataFromFirestore
+
+    val getFirebaseList = MutableLiveData<MutableList<TodoData>?>()
+
 
 
     //Main Fragment
     fun getAllData(userId : String){
-        viewModelScope.launch {
-            val result = repository.gettAllData(userId)
-            getRoomList.value = result
+        viewModelScope.launch(Dispatchers.IO){
+            getTodoUsecase.invoke(userId).collect{
+                _getRoomList.value = it
+            }
         }
     }
 
-    fun getWeatherData(categoryName : String){
+
+
+    fun getApiData(categoryName : String){
         viewModelScope.launch {
-            val result = repository.getImageResponse(categoryName)
-            when(result){
-                is Resource.Success->{
-                    getImageData.value = result.data
-                }
-                is Resource.Loading ->{
-                    println("yukleniyor")
-                }
-                is Resource.Error -> {
-                    println("hata")
+            viewModelScope.launch(Dispatchers.IO){
+                getApiDataUsecase.invoke(categoryName).collect{
+                    _getImageData.value = it
                 }
             }
         }
@@ -46,17 +70,59 @@ class MainFragmentViewModel @Inject constructor(private val repository: TodoRepo
     // AddItemFragment
     fun addItem(todoData: TodoData){
         viewModelScope.launch {
-            repository.insertItem(todoData)
+            insertTodoUsecase.invoke(todoData).collect{
+            }
         }
     }
     fun deleteItem(todoData: TodoData){
         viewModelScope.launch {
-            repository.deleteItem(todoData)
+            deleteTodoUsecase.invoke(todoData).collect{
+            }
         }
     }
     fun updateItem(todoData: TodoData){
         viewModelScope.launch {
-            repository.updateItem(todoData)
+            updateTodoUsecase.invoke(todoData).collect{
+            }
+        }
+    }
+    fun saveUserDatatoFirestore(userId:String,name: String, email: String, password : String,activity : FragmentActivity){
+        viewModelScope.launch {
+            insertUserDataToFirestore.invoke(userId,name,email,password,activity).collect{
+
+            }
+
+        }
+    }
+
+    fun saveTodoDatatoFirestore(todoData: TodoData){
+        viewModelScope.launch {
+            insertTodoDataToFirestore.invoke(todoData).collect{
+
+            }
+
+        }
+    }
+
+    fun getUserDataFromFirestore(view : View){
+        viewModelScope.launch {
+            getUserDataFromFirestore.invoke(view).collect{
+
+            }
+        }
+    }
+    fun removeDataFirestore(todoData: TodoData){
+        viewModelScope.launch {
+            removeDataFromFirestore.invoke(todoData).collect{
+
+            }
+        }
+    }
+    fun getAllTodoDataFromFirestore(todoData: TodoData){
+        viewModelScope.launch {
+            getAllDataFromFirestore.invoke(todoData).collect{
+                _getAllTodoDataFromFirestore.emit(it)
+            }
         }
     }
 }

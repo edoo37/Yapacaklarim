@@ -1,19 +1,14 @@
 package com.yasinsenel.yapacaklarm.utils
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Environment
 import androidx.activity.result.ActivityResultLauncher
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.yasinsenel.yapacaklarm.view.fragment.AddTaskFragment
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat

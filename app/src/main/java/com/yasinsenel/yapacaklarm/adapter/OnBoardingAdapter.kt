@@ -4,9 +4,9 @@ package com.yasinsenel.yapacaklarm.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.yasinsenel.yapacaklarm.view.fragment.OnboardingOneFragment
-import com.yasinsenel.yapacaklarm.view.fragment.OnboardingThreeFragment
-import com.yasinsenel.yapacaklarm.view.fragment.OnboardingTwoFragment
+import com.yasinsenel.yapacaklarm.presentation.onboarding.OnboardingOneFragment
+import com.yasinsenel.yapacaklarm.presentation.onboarding.OnboardingThreeFragment
+import com.yasinsenel.yapacaklarm.presentation.onboarding.OnboardingTwoFragment
 
 class OnBoardingAdapter(fm : FragmentManager, var totalTabs : Int) : FragmentStatePagerAdapter(fm) {
     override fun getCount(): Int {

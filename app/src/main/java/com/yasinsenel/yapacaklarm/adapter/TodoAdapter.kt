@@ -10,7 +10,7 @@ import com.google.android.gms.ads.AdRequest
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.AdsLayoutBinding
 import com.yasinsenel.yapacaklarm.databinding.ItemsLayoutBinding
-import com.yasinsenel.yapacaklarm.diffUtilCallBack.DiffUtilCallBack
+import com.yasinsenel.yapacaklarm.utils.diffUtilCallBack.DiffUtilCallBack
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
 

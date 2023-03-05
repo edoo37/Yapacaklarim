@@ -19,7 +19,7 @@
         android:theme="@style/Theme.Yapacaklarım"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:windowSoftInputMode="stateHidden|adjustPan"
             android:exported="true">
             <intent-filter>

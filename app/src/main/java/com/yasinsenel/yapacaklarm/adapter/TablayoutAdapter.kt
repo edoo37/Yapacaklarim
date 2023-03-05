@@ -3,8 +3,8 @@ package com.yasinsenel.yapacaklarm.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.yasinsenel.yapacaklarm.view.fragment.LoginFragment
-import com.yasinsenel.yapacaklarm.view.fragment.RegisterFragment
+import com.yasinsenel.yapacaklarm.presentation.login.LoginFragment
+import com.yasinsenel.yapacaklarm.presentation.register.RegisterFragment
 
 class TablayoutAdapter(fm : FragmentActivity, var totalTabs : Int) : FragmentStateAdapter(fm) {
     override fun getItemCount(): Int {

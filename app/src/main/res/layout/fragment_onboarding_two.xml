@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#8A9EFF"
-    tools:context=".view.fragment.OnboardingTwoFragment">
+    tools:context=".presentation.onboarding.OnboardingTwoFragment">
 
 
     <TextView

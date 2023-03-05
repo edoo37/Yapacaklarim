@@ -6,7 +6,7 @@
     app:startDestination="@id/splashFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.MainFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.home.MainFragment"
         android:label="fragment_todo"
         tools:layout="@layout/fragment_main" >
         <action
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/addTaskFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.AddTaskFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.insert.AddTaskFragment"
         android:label="fragment_add_task"
         tools:layout="@layout/fragment_add_task" >
 
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.SettingsFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/updateItemFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.UpdateItemFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.update.UpdateItemFragment"
         android:label="fragment_update_item"
         tools:layout="@layout/fragment_update_item" >
         <action
@@ -67,7 +67,7 @@
         tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.SplashFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.splash.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -79,7 +79,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginRegisterFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.LoginRegisterFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.LoginRegisterFragment"
         android:label="fragment_login_register"
         tools:layout="@layout/fragment_login_register" >
         <action
@@ -92,7 +92,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.LoginFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -104,7 +104,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.RegisterFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.register.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -113,7 +113,7 @@
     </fragment>
     <fragment
         android:id="@+id/onboardingFragment"
-        android:name="com.yasinsenel.yapacaklarm.view.fragment.OnboardingFragment"
+        android:name="com.yasinsenel.yapacaklarm.presentation.onboarding.OnboardingFragment"
         android:label="fragment_onboarding"
         tools:layout="@layout/fragment_onboarding" >
         <action
