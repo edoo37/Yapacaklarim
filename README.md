@@ -6,7 +6,7 @@ Todo App, You can save, change and delete your daily plans using this app. View 
 ### Libraries Used
 
 - MVVM + Clean Architecture
-- [Firebase Authenticate](https://www.google.com)
+- [Firebase Authenticate]
 - Firebase Firestore (CRUD operations)
 - Firebase Analytics
 - Hilt
