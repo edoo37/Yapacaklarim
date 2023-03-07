@@ -10,6 +10,7 @@ Todo App, You can save, change and delete your daily plans using this app. View 
 - Firebase Firestore (CRUD operations)
 - Firebase Analytics
 - Hilt
+- Flow
 - Navigation Component
 - Hawk (Shared Preferences)
 - ViewBinding
