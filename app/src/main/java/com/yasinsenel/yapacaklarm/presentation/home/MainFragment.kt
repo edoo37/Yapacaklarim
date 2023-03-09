@@ -41,6 +41,7 @@ import com.google.firebase.storage.ktx.storage
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
+import com.yasinsenel.yapacaklarm.data.model.User
 import com.yasinsenel.yapacaklarm.databinding.FragmentMainBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.utils.Resource
@@ -52,6 +53,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -59,20 +61,17 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private lateinit var binding : FragmentMainBinding
     private lateinit var todoAdapter : TodoAdapter
     private var setList : MutableList<TodoData>? = mutableListOf()
-    private var newList : MutableList<TodoData>? = mutableListOf()
     private val filteredList : MutableList<TodoData> = mutableListOf()
-    private val list : ArrayList<String> = arrayListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
-    private lateinit var auth : FirebaseAuth
     private lateinit var database : DatabaseReference
     private lateinit var db : FirebaseFirestore
     private lateinit var storage : StorageReference
     private lateinit var firebaseAnalytics : FirebaseAnalytics
     private var createStorageRef : String? = null
-    private var isCorrect = false
+    @Inject
+    lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = Firebase.auth
         db = Firebase.firestore
         database = Firebase.database.reference
         storage = Firebase.storage.reference
@@ -101,12 +100,14 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
 
         Firebase.crashlytics.setUserId(auth.currentUser!!.uid)
-        setFrag(auth.currentUser!!.uid)
+        setBannerImage(auth.currentUser!!.uid)
 
         mainFragmentViewModel.getAllData(auth.currentUser!!.uid)
 
         val adRequest = AdRequest.Builder().build()
         binding.adView.loadAd(adRequest)
+
+
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
@@ -115,10 +116,22 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         })
 
 
-        val args = arguments
-        val bundle = args?.getStringArray("sendUserData")
 
-        binding!!.tvUsername.text = bundle?.get(0)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            val args = arguments
+            val bundle = args?.getParcelable("sendUserData",User::class.java)
+            binding!!.tvUsername.text = bundle?.name
+        }
+        else{
+            val args = arguments
+            @Suppress("DEPRECATION")
+            val bundle : User? = args?.getParcelable("sendUserData")
+            binding!!.tvUsername.text = bundle?.name
+        }
+
+
+
+
 
         todoAdapter = TodoAdapter(mainFragmentViewModel,this@MainFragment)
         getImageFromAPI()
@@ -202,10 +215,8 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         })*/
 
         binding.fab.setOnClickListener {
-            val user = auth.currentUser?.uid
             val bundle = Bundle()
-            val bundle2 = Bundle()
-            bundle.putString("userid",user)
+            bundle.putString("userid",auth.currentUser!!.uid)
             Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_addTaskFragment,bundle)
         }
 
@@ -330,8 +341,8 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         requireContext().removeWorkReqeust(setList?.get(data)?.randomString!!)
         //val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
         //listRef.child(position.toString()).removeValue()
-        db.collection("users").document(auth.currentUser?.uid!!).update("todoList",FieldValue.arrayRemove(getData))
-        mainFragmentViewModel.deleteItem(getData!!)
+        mainFragmentViewModel.removeDataFirestore(getData!!)
+        mainFragmentViewModel.deleteItem(getData)
         if(getData.todoImage!=null){
             storage.child(createStorageRef!!).delete()
                 .addOnSuccessListener {
@@ -358,18 +369,28 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         }
     }
 
-    fun setFrag(userId : String){
-        storage.child("profile-images/${userId}")
-            .downloadUrl
-            .addOnSuccessListener {
-                Glide.with(requireView())
-                    .load(it)
-                    .centerCrop()
-                    .into(binding.ivUser)
-            }
-            .addOnFailureListener {
+    fun setBannerImage(userId : String){
+        mainFragmentViewModel.getDataFromFireStorage(userId)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                mainFragmentViewModel.getUserImageDataFromFirestore.collect{userImage->
+                    userImage?.let {
+                        when(userImage){
+                            is Resource.Success->{
+                                println(it)
+                                Glide.with(requireView())
+                                .load(it.data)
+                                .centerCrop()
+                                .into(binding.ivUser)}
+                            is Resource.Loading->{}
+                            is Resource.Error->{}
+                        }
+                    }
 
+                }
             }
+
+        }
     }
 
     fun getList() {

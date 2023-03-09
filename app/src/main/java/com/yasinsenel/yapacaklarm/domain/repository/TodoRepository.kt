@@ -1,8 +1,10 @@
 package com.yasinsenel.yapacaklarm.domain.repository
 
+import android.net.Uri
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
+import com.yasinsenel.yapacaklarm.data.model.User
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.model.UnsplashModel
 import com.yasinsenel.yapacaklarm.room.TodoDAO
@@ -28,9 +30,11 @@ interface TodoRepository  {
 
     suspend fun saveTodoDatatoFirestore(todoData: TodoData)
 
+    suspend fun getDataFromFireStorage(userId : String) : Uri?
+
     suspend fun saveUserDatatoFirestore(userId:String,name: String, email: String, password : String,activity : FragmentActivity)
 
-    suspend fun getUserDataFromFirestore(view: View)
+    suspend fun getUserDataFromFirestore(view: View) : User
 
     suspend fun removeTodoDatatoFirestore(todoData: TodoData)
 }

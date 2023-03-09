@@ -6,10 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.Navigation
 import com.google.firebase.auth.FirebaseAuth
+import com.yasinsenel.yapacaklarm.R
+import com.yasinsenel.yapacaklarm.data.model.User
 import com.yasinsenel.yapacaklarm.databinding.FragmentLoginBinding
+import com.yasinsenel.yapacaklarm.utils.Resource
 import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -17,6 +25,7 @@ import javax.inject.Inject
 class LoginFragment : Fragment() {
     private var binding : FragmentLoginBinding? = null
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
+    private var getList : User? = null
     @Inject
     lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,10 +46,9 @@ class LoginFragment : Fragment() {
         binding!!.apply {
             btnConfirm.setOnClickListener {
                 //loginControl(binding.edtEmail.text.toString())
-                auth.signInWithEmailAndPassword(binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString()).addOnCompleteListener {
+                auth.signInWithEmailAndPassword(binding!!.tietEmail.text.toString(),binding!!.tietPassword.text.toString()).addOnCompleteListener {
                     if(it.isSuccessful){
-                        sendData(view)
-
+                    sendData(view)
                     }
                 }
             }
@@ -79,11 +87,29 @@ class LoginFragment : Fragment() {
         })
 
     }*/
-
-    fun sendData(view: View){
-
+    fun sendData(view : View){
         mainFragmentViewModel.getUserDataFromFirestore(view)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                mainFragmentViewModel.getUserDataFromFirestoree.collect{
+                    it?.let {todoList->
+                        when(todoList){
+                            is Resource.Success->{
+                                getList = todoList.data!!
+                                val bundle = Bundle()
+                                bundle.putParcelable("sendUserData",getList)
+                                Navigation.findNavController(requireView()).navigate(R.id.action_loginRegisterFragment_to_mainFragment,bundle)
+                            }
+                            is Resource.Loading->{}
+                            is Resource.Error->{}
+                        }
+                    }
+                }
+            }
+        }
+
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null

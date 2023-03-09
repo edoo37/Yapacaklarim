@@ -1,10 +1,12 @@
 package com.yasinsenel.yapacaklarm.viewmodel
 
+import android.net.Uri
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yasinsenel.yapacaklarm.data.model.User
 import com.yasinsenel.yapacaklarm.domain.usecase.*
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.model.UnsplashModel
@@ -18,7 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainFragmentViewModel @Inject constructor(
-    private val repository: TodoRepository,
     private val getTodoUsecase: GetTodoUsecase,
     private val insertTodoUsecase: InsertTodoUsecase,
     private val updateTodoUsecase: UpdateTodoUsecase,
@@ -28,7 +29,8 @@ class MainFragmentViewModel @Inject constructor(
     private val getUserDataFromFirestore: GetUserDataFromFirestore,
     private val getAllDataFromFirestore: GetAllDataFromFirestore,
     private val removeDataFromFirestore: RemoveDataFromFirestore,
-    private val insertTodoDataToFirestore: InsertTodoDataToFirestore
+    private val insertTodoDataToFirestore: InsertTodoDataToFirestore,
+    private val getDataFromFireStorage: GetDataFromFireStorage
 ) : ViewModel() {
 
 
@@ -42,6 +44,12 @@ class MainFragmentViewModel @Inject constructor(
     val _getAllTodoDataFromFirestore = MutableSharedFlow<Resource<MutableList<TodoData>>?>(replay=0)
     val getAllTodoDataFromFirestore : SharedFlow<Resource<MutableList<TodoData>>?> = _getAllTodoDataFromFirestore
 
+    val _getUserDataFromFirestoree = MutableStateFlow<Resource<User>?>(null)
+    val getUserDataFromFirestoree : StateFlow<Resource<User>?> = _getUserDataFromFirestoree
+
+    val _getUserImageDataFromFirestore = MutableStateFlow<Resource<Uri>?>(null)
+    val getUserImageDataFromFirestore : StateFlow<Resource<Uri>?> = _getUserImageDataFromFirestore
+
     val getFirebaseList = MutableLiveData<MutableList<TodoData>?>()
 
 
@@ -54,8 +62,6 @@ class MainFragmentViewModel @Inject constructor(
             }
         }
     }
-
-
 
     fun getApiData(categoryName : String){
         viewModelScope.launch {
@@ -105,11 +111,19 @@ class MainFragmentViewModel @Inject constructor(
     }
 
     fun getUserDataFromFirestore(view : View){
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             getUserDataFromFirestore.invoke(view).collect{
-
+                _getUserDataFromFirestoree.value = it
             }
         }
+    }
+    fun getDataFromFireStorage(userId : String){
+        viewModelScope.launch(Dispatchers.IO) {
+            getDataFromFireStorage.invoke(userId).collect{
+                _getUserImageDataFromFirestore.value = it
+            }
+        }
+
     }
     fun removeDataFirestore(todoData: TodoData){
         viewModelScope.launch {

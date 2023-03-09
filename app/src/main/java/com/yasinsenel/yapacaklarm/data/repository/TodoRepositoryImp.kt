@@ -1,6 +1,7 @@
 package com.yasinsenel.yapacaklarm.data.repository
 
 import android.app.Application
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -8,17 +9,20 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import com.yasinsenel.yapacaklarm.R
+import com.yasinsenel.yapacaklarm.data.model.User
 import com.yasinsenel.yapacaklarm.data.model.UserDocument
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.model.UnsplashModel
 import com.yasinsenel.yapacaklarm.domain.repository.TodoRepository
 import com.yasinsenel.yapacaklarm.room.TodoDAO
 import com.yasinsenel.yapacaklarm.service.ImagesAPI
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -68,18 +72,21 @@ class TodoRepositoryImp @Inject constructor(private val api : ImagesAPI, private
         return getList!!
     }
 
-    override suspend fun getUserDataFromFirestore(view: View) {
+    override suspend fun getUserDataFromFirestore(view: View) : User {
+        var getUser : User? = null
+        val def = CompletableDeferred<User>()
         auth.uid?.let { uid->
             firebaseFirestore.collection("users").document(uid)
                 .get()
                 .addOnSuccessListener {
                     val email=it.get("email")
-                    val username=it.get("username")
-                    val bundle = Bundle()
-                    bundle.putStringArray("sendUserData", arrayOf(email.toString(),username.toString()))
-                    Navigation.findNavController(view).navigate(R.id.action_loginRegisterFragment_to_mainFragment,bundle)
+                    val username=it.get("name")
+                    val user = User(username.toString(),email.toString())
+                    def.complete(user)
                 }.await()
         }
+
+        return def.await()
     }
 
 
@@ -97,6 +104,19 @@ class TodoRepositoryImp @Inject constructor(private val api : ImagesAPI, private
             firebaseFirestore.collection("users").document(uid!!).update("todoList", FieldValue.arrayUnion(todoData))
         }.await()
 
+    }
+
+    override suspend fun getDataFromFireStorage(userId : String): Uri? {
+        val def = CompletableDeferred<Uri>()
+        firebaseStorage.child("profile-images/${userId}")
+            .downloadUrl
+            .addOnSuccessListener {
+                def.complete(it)
+            }
+            .addOnFailureListener {
+
+            }.await()
+        return def.await()
     }
 
     override suspend fun removeTodoDatatoFirestore(todoData: TodoData){

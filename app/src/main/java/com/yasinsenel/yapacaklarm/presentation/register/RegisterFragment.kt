@@ -73,11 +73,11 @@ class RegisterFragment() : Fragment(){
 
         binding!!.apply {
             btnConfirm.setOnClickListener {
-                firebaseAuth.createUserWithEmailAndPassword(binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString())
+                firebaseAuth.createUserWithEmailAndPassword(binding!!.tietEmail.text.toString(),binding!!.tietPassword.text.toString())
                     .addOnCompleteListener {
                         if(it.isSuccessful){
 
-                            writeUserToFiresstore(firebaseAuth.currentUser!!.uid,binding!!.edtUsername.text.toString(),binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString(),requireActivity())
+                            writeUserToFiresstore(firebaseAuth.currentUser!!.uid,binding!!.tietUsername.text.toString(),binding!!.tietEmail.text.toString(),binding!!.tietPassword.text.toString(),requireActivity())
                             //writeNewUser(userId,binding!!.edtUsername.text.toString(),binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString())
                             if(uri!=null){
                                 firebaseStorage.child("profile-images/${firebaseAuth.currentUser!!.uid}").putFile(uri!!)
