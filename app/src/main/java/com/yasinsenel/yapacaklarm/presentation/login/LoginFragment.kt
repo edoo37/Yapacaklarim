@@ -90,7 +90,6 @@ class LoginFragment : Fragment() {
     fun sendData(view : View){
         mainFragmentViewModel.getUserDataFromFirestore(view)
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 mainFragmentViewModel.getUserDataFromFirestoree.collect{
                     it?.let {todoList->
                         when(todoList){
@@ -105,7 +104,6 @@ class LoginFragment : Fragment() {
                         }
                     }
                 }
-            }
         }
 
     }

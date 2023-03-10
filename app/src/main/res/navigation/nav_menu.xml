@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_mainFragment_to_loginRegisterFragment"
             app:destination="@id/loginRegisterFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_updateItemFragment2"
+            app:destination="@id/updateItemFragment" />
     </fragment>
     <fragment
         android:id="@+id/addTaskFragment"

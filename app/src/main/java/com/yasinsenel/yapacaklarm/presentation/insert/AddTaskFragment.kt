@@ -27,6 +27,7 @@ import com.yasinsenel.yapacaklarm.utils.createImageFile
 import com.yasinsenel.yapacaklarm.utils.createWorkRequest
 import com.yasinsenel.yapacaklarm.presentation.datepicker.DataPickerFragment
 import com.yasinsenel.yapacaklarm.presentation.timepicker.TimePickerFragment
+import com.yasinsenel.yapacaklarm.viewmodel.AddTaskFragmentViewModel
 import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -37,7 +38,7 @@ class AddTaskFragment : Fragment() {
         private lateinit var binding : FragmentAddTaskBinding
         private var uri : Uri? = null
         lateinit var getContent : ActivityResultLauncher<Uri>
-        private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
+        private val addTaskFragmentViewModel : AddTaskFragmentViewModel by viewModels()
         companion object{
             const val CAMERA_PERMISSION = 1
         }
@@ -182,7 +183,8 @@ class AddTaskFragment : Fragment() {
                 uriString = uri.toString()
             }
             val list = TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString,randomString, userId,)
-            mainFragmentViewModel.addItem(list)
+            addTaskFragmentViewModel.addItem(list)
+            addTaskFragmentViewModel.addTodoImageToFireStorage(list)
 
 
             // WORKMANAGER ISLEMLERI
