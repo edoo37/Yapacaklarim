@@ -23,6 +23,5 @@ Todo App, You can save, change and delete your daily plans using this app. View 
 # Output
 | Splash Screen | OnBoarding Screen | Login Screen | Registration Screen|
 | --- | --- | --- | --- |
-| ![WhatsApp Image 2023-03-10 at 16 52 47]( https://user-images.githubusercontent.com/37002199/224334740-02aaf3ec-db32-41aa-bf59-84b448eb1934.jpeg)| ![OnBoarding Screen](https://user-images.githubusercontent.com/37002199/224334991-49452ebf-f592-48d6-9f4a-9b5f94d467df.jpeg) | ![WhatsApp Image 2023-03-10 at 16 48 02 (8)](https://user-images.githubusercontent.com/37002199/224335000-c7772372-8b65-41aa-8c98-29eb58a66481.jpeg) | ![WhatsApp Image 2022-07-21 at 18 13 49](https://user-images.githubusercontent.com/60755254/180250892-738af58c-045a-4f96-bbf0-7b9c2bb38cd8.jpeg) |
-
+| ![WhatsApp Image 2023-03-10 at 16 52 47]( https://user-images.githubusercontent.com/37002199/224334740-02aaf3ec-db32-41aa-bf59-84b448eb1934.jpeg)| ![OnBoarding Screen](https://user-images.githubusercontent.com/37002199/224334991-49452ebf-f592-48d6-9f4a-9b5f94d467df.jpeg) | ![WhatsApp Image 2023-03-10 at 16 48 02 (8)](https://user-images.githubusercontent.com/37002199/224335000-c7772372-8b65-41aa-8c98-29eb58a66481.jpeg) | ![WhatsApp Image 2023-03-10 at 16 48 02 (9)](https://user-images.githubusercontent.com/37002199/224335014-8d425731-2584-4258-a106-d7b7c2dd517d.jpeg) |
 
