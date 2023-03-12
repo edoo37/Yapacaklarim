@@ -56,7 +56,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
-            android:inputType="textPassword"
             android:maxLength="20"
             android:textSize="15dp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -81,7 +80,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
-            android:inputType="textPassword"
             android:maxLength="20"
             android:textSize="15dp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -91,9 +89,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_marginHorizontal="30dp"
+        android:layout_marginHorizontal="20dp"
         android:text="@string/slct_date"
         android:textColor="@color/white"
+        android:backgroundTint="#00FFFF"
         app:icon="@drawable/ic_calendar"
         app:iconGravity="textStart"
         app:layout_constraintEnd_toStartOf="@id/btn_time"
@@ -105,8 +104,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_marginHorizontal="30dp"
+        android:layout_marginHorizontal="20dp"
         android:text="@string/slct_time"
+        android:backgroundTint="#00FFFF"
         android:textColor="@color/white"
         app:icon="@drawable/ic_time"
         app:iconGravity="textStart"
