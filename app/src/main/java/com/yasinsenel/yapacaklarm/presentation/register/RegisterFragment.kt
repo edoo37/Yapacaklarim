@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
@@ -75,16 +76,18 @@ class RegisterFragment() : Fragment(){
             btnConfirm.setOnClickListener {
                 firebaseAuth.createUserWithEmailAndPassword(binding!!.tietEmail.text.toString(),binding!!.tietPassword.text.toString())
                     .addOnCompleteListener {
+                        progressBar.isVisible = true
                         if(it.isSuccessful){
-
                             writeUserToFiresstore(firebaseAuth.currentUser!!.uid,binding!!.tietUsername.text.toString(),binding!!.tietEmail.text.toString(),binding!!.tietPassword.text.toString(),requireActivity())
                             //writeNewUser(userId,binding!!.edtUsername.text.toString(),binding!!.edtEmail.text.toString(),binding!!.edtPassword.text.toString())
                             if(uri!=null){
                                 firebaseStorage.child("profile-images/${firebaseAuth.currentUser!!.uid}").putFile(uri!!)
                             }
+                            progressBar.isVisible = false
                         }
                         else{
                             Toast.makeText(requireContext(),it.exception.toString(),Toast.LENGTH_SHORT).show()
+                            progressBar.isVisible = false
                         }
                     }
             }

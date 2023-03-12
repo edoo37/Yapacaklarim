@@ -38,7 +38,7 @@ class SplashFragment : Fragment() {
     }
     private fun checkSplashCompleted(){
         Hawk.init(requireContext()).build()
-        val getHawkSplashData = Hawk.get("finishOb",false)
+        val getHawkSplashData = Hawk.get("finishObData",false)
         if(getHawkSplashData){
             Handler(Looper.getMainLooper()!!).postDelayed({
                 findNavController().navigate(R.id.action_splashFragment_to_loginRegisterFragment)

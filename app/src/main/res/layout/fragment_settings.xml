@@ -6,6 +6,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.settings.SettingsFragment">
 
+   <com.google.android.material.card.MaterialCardView
+       android:id="@+id/card"
+       android:layout_width="match_parent"
+       android:layout_height="100dp"
+       android:backgroundTint="#1982C8"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent">
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/txt_fragment_settings"
+          android:textColor="@color/white"
+          android:textSize="20sp"
+          android:gravity="center"
+          android:layout_gravity="center"
+          android:layout_marginTop="20dp"/>
+   </com.google.android.material.card.MaterialCardView>
+
+
    <androidx.appcompat.widget.SwitchCompat
        android:id="@+id/button"
        android:layout_width="wrap_content"
@@ -13,7 +33,7 @@
        android:layout_marginTop="30dp"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintStart_toEndOf="@id/tv_mode"
-       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/card"
        app:track="@drawable/track_backgrounds"
        android:thumb="@drawable/layer_list"/>
 

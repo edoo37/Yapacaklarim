@@ -19,6 +19,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.shape.CornerFamily
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.analytics.AnalyticsTools
 import com.yasinsenel.yapacaklarm.databinding.FragmentAddTaskBinding
@@ -58,6 +59,11 @@ class AddTaskFragment : Fragment() {
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
+
+            binding.card.shapeAppearanceModel = binding.card.shapeAppearanceModel.toBuilder()
+                .setBottomLeftCorner(CornerFamily.ROUNDED, 80f)
+                .setBottomRightCorner(CornerFamily.ROUNDED, 80f)
+                .build()
 
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
                 override fun handleOnBackPressed() {
@@ -100,7 +106,7 @@ class AddTaskFragment : Fragment() {
                     checkFields()
                 }
 
-                edtDate.setOnClickListener {
+                btnDate.setOnClickListener {
                     val datePickerFragment = DataPickerFragment()
                     val supportFragment = requireActivity().supportFragmentManager
 
@@ -110,12 +116,12 @@ class AddTaskFragment : Fragment() {
                     ){ resultKey, bundle ->
                         if (resultKey == "REQUEST_KEY") {
                             val date = bundle.getString("SELECTED_DATE")
-                            edtDate.setText(date)
+                            btnDate.setText(date)
                         }
                     }
                     datePickerFragment.show(supportFragment,"DatePickerFragment")
                 }
-                edtTime.setOnClickListener {
+                btnTime.setOnClickListener {
                     showTimePickerDialog()
                 }
             }
@@ -128,7 +134,7 @@ class AddTaskFragment : Fragment() {
     }
 
     private fun onTimeSelected(time: String) {
-        binding.edtTime.setText(time)
+        binding.btnTime.setText(time)
     }
 
 
@@ -160,8 +166,8 @@ class AddTaskFragment : Fragment() {
 
     private fun checkFields(){
         binding.apply {
-            if(edtTaskName.text.isEmpty() || edtTaskDesc.text.isEmpty() || edtDate.text.isEmpty()
-                || edtTime.text.isEmpty()){
+            if(tietTaskName.text!!.isEmpty() || tietTaskDesc.text!!.isEmpty() || btnDate.text.isEmpty()
+                || btnTime.text.isEmpty()){
                 Toast.makeText(requireContext(),R.string.txt_error_message,Toast.LENGTH_SHORT).show()
             }
             else{
@@ -173,8 +179,8 @@ class AddTaskFragment : Fragment() {
 
     private fun fillFields(){
         binding.apply {
-            val date = edtDate.text.toString()
-            val time = edtTime.text.toString()
+            val date = btnDate.text.toString()
+            val time = btnTime.text.toString()
             val randomString = UUID.randomUUID().toString().substring(0,15)
             var uriString  : String? = null
             val args = arguments
@@ -182,7 +188,7 @@ class AddTaskFragment : Fragment() {
             if(uri != null){
                 uriString = uri.toString()
             }
-            val list = TodoData(edtTaskName.text.toString(),edtTaskDesc.text.toString(),date,time,uriString,randomString, userId,)
+            val list = TodoData(tietTaskName.text.toString(),tietTaskDesc.text.toString(),date,time,uriString,randomString, userId)
             addTaskFragmentViewModel.addItem(list)
             addTaskFragmentViewModel.addTodoImageToFireStorage(list)
 
@@ -201,7 +207,7 @@ class AddTaskFragment : Fragment() {
             //WORK MANAGER
             val currentDateTime = Calendar.getInstance()
             val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
-            requireContext().createWorkRequest(edtTaskName.text.toString(),edtTaskDesc.text.toString(),timee,randomString)
+            requireContext().createWorkRequest(tietTaskName.text.toString(),tietTaskName.text.toString(),timee,randomString)
             //ANALYTICS
             AnalyticsTools.logCustomEvent("eventTimes", bundleOf(userId.toString() to userSelectedDateTime.toString()))
 

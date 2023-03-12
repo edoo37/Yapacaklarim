@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -45,9 +46,11 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding!!.apply {
             btnConfirm.setOnClickListener {
+                progressBar.isVisible = true
                 //loginControl(binding.edtEmail.text.toString())
                 auth.signInWithEmailAndPassword(binding!!.tietEmail.text.toString(),binding!!.tietPassword.text.toString()).addOnCompleteListener {
                     if(it.isSuccessful){
+                    progressBar.isVisible = false
                     sendData(view)
                     }
                 }

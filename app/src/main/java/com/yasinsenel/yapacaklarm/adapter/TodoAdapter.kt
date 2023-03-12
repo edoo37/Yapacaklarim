@@ -1,6 +1,7 @@
 package com.yasinsenel.yapacaklarm.adapter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.Navigation
@@ -10,15 +11,12 @@ import com.google.android.gms.ads.AdRequest
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.AdsLayoutBinding
 import com.yasinsenel.yapacaklarm.databinding.ItemsLayoutBinding
-import com.yasinsenel.yapacaklarm.utils.diffUtilCallBack.DiffUtilCallBack
 import com.yasinsenel.yapacaklarm.model.TodoData
-import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
+import com.yasinsenel.yapacaklarm.utils.diffUtilCallBack.DiffUtilCallBack
 
 
-class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel,private val removeitem: removeItem) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private lateinit var binding : ItemsLayoutBinding
+class TodoAdapter(private val removeitem: removeItem) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList : MutableList<TodoData> = mutableListOf()
-    private var adList : MutableList<Any> = mutableListOf()
     var isAd = false
     var newPos = 0
 
@@ -39,21 +37,27 @@ class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel,priva
 
 
     inner class Holder(val binding : ItemsLayoutBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(data : TodoData){
+        fun bind(data : TodoData,position: Int){
             binding.apply {
                 tvTaskName.text = data.todoName
                 tvDate.text = data.todoDate
                 tvTime.text = data.todoTime
 
                 text.setOnClickListener {
-                    if(adapterPosition == 0 || adapterPosition == 1 || adapterPosition == 2){
-                        removeitem.deleteItem(adapterPosition,itemCount)
+
+                    removeitem.deleteItem(adapterPosition,itemCount)
+                    if(itemList.size%4==0){
+                        val list : MutableList<TodoData> = mutableListOf()
+                        list.add(data)
+                        val deneme = itemList.findLast { it.isAd == true }
+                        list.add(deneme!!)
+                        itemList.removeAll(list)
+                        list.clear()
                     }
                     else{
-                        removeitem.deleteItem(newPos,itemCount)
+                        itemList.remove(data)
                     }
 
-                    itemList.remove(data)
                     //Navigation.findNavController(it).navigate(R.id.action_mainFragment_self)
 
                 }
@@ -100,21 +104,14 @@ class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel,priva
     }
 
     override fun getItemCount(): Int {
-        if(itemList.size>2){
-            val myListsize : Double= itemList.size.toDouble()
-            val deneme = Math.ceil(myListsize / 4).toInt() //will be 2
-            return itemList.size + deneme
-        }
         return itemList.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        val positionNew = position +1 
-        return if (positionNew % 4 == 0 && position > 0) {
-            isAd = true
+        val positionNew = position +1
+        return if (itemList.get(position).isAd!!) {
             AD_TYPE
         } else {
-            isAd = false
             CONTENT_TYPE
         }
     }
@@ -128,6 +125,7 @@ class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel,priva
         val diffResult = DiffUtil.calculateDiff(diffUtilCallBack)
         itemList.clear()
         itemList.addAll(myNewList)
+        notifyDataSetChanged()
         diffResult.dispatchUpdatesTo(this)
 
     }
@@ -138,8 +136,7 @@ class TodoAdapter(private val mainFragmentViewModel: MainFragmentViewModel,priva
             (holder as Holder1).bind()
         }
         if(getViewType == CONTENT_TYPE){
-            newPos = position - position/4
-            (holder as Holder).bind(itemList[newPos])
+            (holder as Holder).bind(itemList.get(position),position)
         }
 
     }

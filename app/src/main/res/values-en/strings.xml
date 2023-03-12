@@ -41,4 +41,8 @@
     <string name="txt_ob_desc3">Get started to experience the app!</string>
     <string name="btn_ob_start">GET STARTED</string>
     <string name="txt_ob_skip">FINISH</string>
+    <string name="txt_fragment_settings">SETTINGS</string>
+    <string name="txt_fragment_about">ABOUT US</string>
+    <string name="txt_fragment_update">UPDATE</string>
+    <string name="txt_fragment_insert">INSERT</string>
 </resources>

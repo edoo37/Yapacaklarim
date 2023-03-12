@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.shape.CornerFamily
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.FragmentSettingsBinding
@@ -38,7 +39,10 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.card.shapeAppearanceModel = binding.card.shapeAppearanceModel.toBuilder()
+            .setBottomLeftCorner(CornerFamily.ROUNDED, 80f)
+            .setBottomRightCorner(CornerFamily.ROUNDED, 80f)
+            .build()
 
         binding.button.setOnCheckedChangeListener { compoundButton, b ->
             if(b){

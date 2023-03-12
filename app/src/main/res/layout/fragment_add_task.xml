@@ -7,6 +7,25 @@
     tools:context=".presentation.insert.AddTaskFragment">
 
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:backgroundTint="#1982C8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_fragment_insert"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"/>
+    </com.google.android.material.card.MaterialCardView>
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="400dp"
@@ -16,68 +35,103 @@
         android:src="@drawable/group_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/card" />
 
-    <EditText
-        android:id="@+id/edt_task_name"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_task_name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_marginTop="30dp"
-        android:inputType="textPersonName"
         android:hint="@string/txt_name_task"
-        android:gravity="center"
+        app:counterEnabled="true"
+        app:counterMaxLength="10"
+        app:hintAnimationEnabled="true"
+        android:layout_margin="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@id/imageView"
+        app:startIconDrawable="@drawable/ic_task_name">
 
-    <EditText
-        android:id="@+id/edt_task_desc"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tiet_task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"
+            android:inputType="textPassword"
+            android:maxLength="20"
+            android:textSize="15dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_task_desc"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_marginTop="20dp"
-        android:inputType="textPersonName"
         android:hint="@string/txt_desc_task"
-        android:gravity="center"
+        app:counterEnabled="true"
+        android:layout_margin="10dp"
+        app:counterMaxLength="20"
+        app:hintAnimationEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_task_name" />
+        app:layout_constraintTop_toBottomOf="@id/til_task_name"
+        app:startIconDrawable="@drawable/ic_task_desc">
 
-    <TextView
-        android:id="@+id/edt_date"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tiet_task_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"
+            android:inputType="textPassword"
+            android:maxLength="20"
+            android:textSize="15dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:hint="@string/slct_date"
-        android:gravity="center"
-        app:layout_constraintEnd_toStartOf="@id/edt_time"
+        android:layout_marginHorizontal="30dp"
+        android:text="@string/slct_date"
+        android:textColor="@color/white"
+        app:icon="@drawable/ic_calendar"
+        app:iconGravity="textStart"
+        app:layout_constraintEnd_toStartOf="@id/btn_time"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_task_desc" />
-    <TextView
-        android:id="@+id/edt_time"
+        app:layout_constraintTop_toBottomOf="@+id/til_task_desc" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:hint="@string/slct_time"
-        android:gravity="center"
+        android:layout_marginHorizontal="30dp"
+        android:text="@string/slct_time"
+        android:textColor="@color/white"
+        app:icon="@drawable/ic_time"
+        app:iconGravity="textStart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/edt_date"
-        app:layout_constraintTop_toBottomOf="@+id/edt_task_desc" />
+        app:layout_constraintStart_toEndOf="@id/btn_date"
+        app:layout_constraintTop_toBottomOf="@+id/til_task_desc" />
 
-    <androidx.appcompat.widget.AppCompatButton
+
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
         android:text="@string/btn_confirm"
-        android:layout_marginTop="40dp"
-        android:background="#00FFFF"
-        android:textColor="@color/white"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        app:iconGravity="textStart"
+        app:icon="@drawable/ic_task"
+        app:cornerRadius="8dp"
+        android:layout_margin="10dp"
+        android:backgroundTint="#00FFFF"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_date" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_date" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

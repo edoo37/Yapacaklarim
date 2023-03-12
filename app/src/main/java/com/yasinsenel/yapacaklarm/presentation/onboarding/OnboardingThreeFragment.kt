@@ -43,7 +43,7 @@ class OnboardingThreeFragment : Fragment() {
     }
 
     private fun finishOnboarding(){
-        Hawk.put("finishOb",true)
+        Hawk.put("finishObData",true)
     }
 
 }

@@ -27,6 +27,7 @@ data class TodoData(
     var randomString : String? = null,
     @ColumnInfo("userId")
     var userId : String? = null,
+    var isAd : Boolean? = null,
     @PrimaryKey(autoGenerate = true)
     var id : Int? = null
 ) : Parcelable

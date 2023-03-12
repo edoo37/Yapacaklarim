@@ -40,4 +40,8 @@
     <string name="txt_ob_desc3">Uygulamayı deneyimlemek için başla!</string>
     <string name="btn_ob_start">BAŞLAYIN</string>
     <string name="txt_ob_skip">BİTİR</string>
+    <string name="txt_fragment_settings">AYARLAR</string>
+    <string name="txt_fragment_about">HAKKIMIZDA</string>
+    <string name="txt_fragment_update">DEĞİŞTİR</string>
+    <string name="txt_fragment_insert">EKLE</string>
 </resources>

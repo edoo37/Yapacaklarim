@@ -18,6 +18,7 @@ import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.shape.CornerFamily
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
@@ -64,6 +65,10 @@ class UpdateItemFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.card.shapeAppearanceModel = binding.card.shapeAppearanceModel.toBuilder()
+            .setBottomLeftCorner(CornerFamily.ROUNDED, 80f)
+            .setBottomRightCorner(CornerFamily.ROUNDED, 80f)
+            .build()
         binding.apply {
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
                 override fun handleOnBackPressed() {
@@ -93,7 +98,7 @@ class UpdateItemFragment : Fragment() {
             }
 
 
-            edtDate.setOnClickListener {
+            btnDate.setOnClickListener {
                 val datePickerFragment = DataPickerFragment()
                 val supportFragment = requireActivity().supportFragmentManager
 
@@ -103,12 +108,12 @@ class UpdateItemFragment : Fragment() {
                 ){ resultKey, bundle ->
                     if (resultKey == "REQUEST_KEY") {
                         val date = bundle.getString("SELECTED_DATE")
-                        edtDate.setText(date)
+                        btnDate.setText(date)
                     }
                 }
                 datePickerFragment.show(supportFragment,"DatePickerFragment")
             }
-            edtTime.setOnClickListener {
+            btnTime.setOnClickListener {
                 showTimePickerDialog()
             }
         }
@@ -117,10 +122,10 @@ class UpdateItemFragment : Fragment() {
         val bundleData = arguments
         todoModel = bundleData?.getParcelable("dataClass")
         val getid = todoModel?.id
-        binding.edtTaskName.setText(todoModel?.todoName)
-        binding.edtTaskDesc.setText(todoModel?.todoDesc)
-        binding.edtDate.setText(todoModel?.todoDate)
-        binding.edtTime.setText(todoModel?.todoTime)
+        binding.tietTaskName.setText(todoModel?.todoName)
+        binding.tietTaskDesc.setText(todoModel?.todoDesc)
+        binding.btnDate.setText(todoModel?.todoDate)
+        binding.btnTime.setText(todoModel?.todoTime)
         binding.imageView.setImageURI(todoModel?.todoImage?.toUri())
 
         val getString = todoModel?.randomString
@@ -141,8 +146,8 @@ class UpdateItemFragment : Fragment() {
                     println(it)
                 }
             }
-            val date = binding.edtDate.text.toString()
-            val time = binding.edtTime.text.toString()
+            val date = binding.btnDate.text.toString()
+            val time = binding.btnTime.text.toString()
             val splipt = date.split(".")
             val year = splipt.get(2).toInt()
             val month = splipt.get(1).toInt()  - 1
@@ -163,10 +168,10 @@ class UpdateItemFragment : Fragment() {
             val timee = userSelectedDateTime.timeInMillis/1000 - currentDateTime.timeInMillis/1000
             val randomString = UUID.randomUUID().toString().substring(0,15)
             val args = arguments
-            val list = TodoData(binding.edtTaskName.text.toString(),binding.edtTaskDesc.text.toString(),date,time,uriString,randomString, getUserId,getid)
+            val list = TodoData(binding.tietTaskName.text.toString(),binding.tietTaskDesc.text.toString(),date,time,uriString,randomString, getUserId,false,getid)
             mainFragmentViewModel.updateItem(list)
             requireContext().removeWorkReqeust(getString!!)
-            requireContext().createWorkRequest(binding.edtTaskName.text.toString(),binding.edtTaskDesc.text.toString(),timee,randomString)
+            requireContext().createWorkRequest(binding.tietTaskName.text.toString(),binding.tietTaskDesc.text.toString(),timee,randomString)
             findNavController().popBackStack()
         }
 
@@ -181,7 +186,7 @@ class UpdateItemFragment : Fragment() {
     }
 
     private fun onTimeSelected(time: String) {
-        binding.edtTime.setText(time)
+        binding.btnTime.setText(time)
     }
 
     fun invokeCamera(){

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.shape.CornerFamily
 import com.yasinsenel.yapacaklarm.R
 import com.yasinsenel.yapacaklarm.databinding.FragmentAboutBinding
 
@@ -25,5 +26,12 @@ class AboutFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.card.shapeAppearanceModel = binding.card.shapeAppearanceModel.toBuilder()
+            .setBottomLeftCorner(CornerFamily.ROUNDED, 80f)
+            .setBottomRightCorner(CornerFamily.ROUNDED, 80f)
+            .build()
+    }
 
 }

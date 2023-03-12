@@ -61,6 +61,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private lateinit var binding : FragmentMainBinding
     private lateinit var todoAdapter : TodoAdapter
     private var setList : MutableList<TodoData>? = mutableListOf()
+    private var newList : MutableList<TodoData>? = mutableListOf()
     private val filteredList : MutableList<TodoData> = mutableListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
     private lateinit var database : DatabaseReference
@@ -133,7 +134,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
 
 
-        todoAdapter = TodoAdapter(mainFragmentViewModel,this@MainFragment)
+        todoAdapter = TodoAdapter(this@MainFragment)
         getImageFromAPI()
 
 
@@ -272,7 +273,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private fun search(text : String?){
         filteredList.clear()
         if(text?.length!! >=3){
-            setList?.forEach {
+            newList?.forEach {
                 if(it.todoName?.lowercase()!!.startsWith(text.lowercase())){
                     filteredList.add(it)
                 }
@@ -280,7 +281,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
             todoAdapter.setNewList(filteredList)
         }
         else{
-            todoAdapter.setNewList(setList!!)
+            todoAdapter.setNewList(newList!!)
         }
 
     }
@@ -337,10 +338,11 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     }
 
     override fun deleteItem(data: Int, dataSize:Int) {
-        val getData = setList?.get(data)
-        requireContext().removeWorkReqeust(setList?.get(data)?.randomString!!)
+        val getData = newList?.get(data)
+        requireContext().removeWorkReqeust(newList?.get(data)?.randomString!!)
         //val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
         //listRef.child(position.toString()).removeValue()
+
         mainFragmentViewModel.removeDataFirestore(getData!!)
         mainFragmentViewModel.deleteItem(getData)
         if(getData.todoImage!=null){
@@ -352,16 +354,29 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
                 }
         }
-        val getUri = setList?.get(data)?.todoImage
+        val getUri = newList?.get(data)?.todoImage
         if(getUri != null){
             val contentResolver: ContentResolver = requireActivity().getContentResolver()
             contentResolver.delete(getUri.toUri(), null, null)
         }
-        setList?.removeAt(data)
-        todoAdapter.notifyItemRemoved(data)
-        todoAdapter.notifyItemRangeChanged(data,dataSize)
+        if(newList!!.size%4==0){
+            val list : MutableList<TodoData> = mutableListOf()
+            list.add(getData)
+            val deneme = newList?.findLast { it.isAd == true }
+            list.add(deneme!!)
+            newList!!.removeAll(list)
+            list.clear()
+            todoAdapter.notifyItemRemoved(data)
+            todoAdapter.notifyItemRangeChanged(data,dataSize)
+        }
+        else{
+            newList?.removeAt(data)
+            todoAdapter.notifyItemRemoved(data)
+            todoAdapter.notifyItemRangeChanged(data,dataSize)
+        }
+
         Toast.makeText(context,R.string.txt_delete_message, Toast.LENGTH_SHORT).show()
-        if(setList?.size==0){
+        if(newList?.size==0){
             binding.tvEmpty.visibility = View.VISIBLE
         }
         else{
@@ -400,17 +415,37 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                     it?.let {todoList->
                         when(todoList){
                             is Resource.Success->{
+                                newList?.clear()
                                 setList = todoList.data
                                 println(setList)
-                                setAdapter(setList)
+                                var adPost = 1
+                                setList?.forEach {
+                                    saveDatatoFirestore(it)
+                                    if(adPost==3){
+                                        it.isAd = false
+                                        newList?.add(it)
+                                        newList?.add(
+                                            TodoData(it.todoName,null,null,null,
+                                        null,null,null,true,null)
+                                        )
+                                        adPost = 1
+                                    }
+                                    else{
+                                        it.isAd = false
+                                        newList?.add(it)
+                                        adPost += 1
+                                    }
+
+                                }
+                                adPost = 1
+                                setAdapter(newList)
+                                println(newList?.size)
                             }
                             is Resource.Loading->{}
                             is Resource.Error->{}
                         }
                     }
-                    setList?.forEach {
-                        saveDatatoFirestore(it)
-                    }
+
                 }
             }
 
