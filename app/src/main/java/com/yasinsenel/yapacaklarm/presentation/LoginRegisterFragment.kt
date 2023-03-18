@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.yasinsenel.yapacaklarm.R
-import com.yasinsenel.yapacaklarm.TablayoutAdapter
 import com.yasinsenel.yapacaklarm.databinding.FragmentLoginRegisterBinding
 
 

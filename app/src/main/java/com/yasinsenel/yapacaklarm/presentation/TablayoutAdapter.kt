@@ -1,4 +1,4 @@
-package com.yasinsenel.yapacaklarm
+package com.yasinsenel.yapacaklarm.presentation
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
