@@ -29,7 +29,7 @@ Todo App, You can save, change and delete your daily plans using this app. View 
 
 | Home Screen | Add Task | Update Task | Settings |
 | --- | --- | --- | --- |
-| ![WhatsApp Image 2023-03-10 at 16 48 02 (1)](https://user-images.githubusercontent.com/37002199/224334942-3e832b10-ed86-400d-92c9-f1508b2d05d3.jpeg)| ![WhatsApp Image 2023-03-18 at 19 51 24](https://user-images.githubusercontent.com/37002199/226136901-8d19317f-ecc1-4326-a00f-dd61889f52f2.jpeg)| ![WhatsApp Image 2023-03-10 at 16 48 02 (2)](https://user-images.githubusercontent.com/37002199/224334783-749f439f-08bf-4f61-8dca-c607ea5b35a7.jpeg)| ![WhatsApp Image 2023-03-10 at 16 48 02](https://user-images.githubusercontent.com/37002199/224335025-d2355307-2974-42e5-a31f-19314f46da88.jpeg)|
+| ![WhatsApp Image 2023-03-10 at 16 48 02 (1)](https://user-images.githubusercontent.com/37002199/224334942-3e832b10-ed86-400d-92c9-f1508b2d05d3.jpeg)| ![WhatsApp Image 2023-03-18 at 19 51 24](https://user-images.githubusercontent.com/37002199/226136901-8d19317f-ecc1-4326-a00f-dd61889f52f2.jpeg)| ![WhatsApp Image 2023-03-18 at 19 51 24 (1)](https://user-images.githubusercontent.com/37002199/226136939-ead7ef23-1846-42fc-9db1-cde8b71c7d0b.jpeg)| ![WhatsApp Image 2023-03-18 at 19 51 25 (1)](https://user-images.githubusercontent.com/37002199/226136934-bcec3496-509f-4a0a-ae57-d5d4440c7d52.jpeg)|
 
 
 | Delete Note |
