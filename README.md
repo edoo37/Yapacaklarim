@@ -19,6 +19,9 @@ Todo App, You can save, change and delete your daily plans using this app. View 
 - Repositories
 - Retrofit
 - Room Database
+- Glide
+- Lottie
+- Skeleton Layout
 
 
 
