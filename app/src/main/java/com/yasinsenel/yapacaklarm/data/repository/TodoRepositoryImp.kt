@@ -31,12 +31,12 @@ class TodoRepositoryImp @Inject constructor(private val api : ImagesAPI, private
                                             private val firebaseStorage : StorageReference, private val application: Application
 
 ) : TodoRepository {
-    override suspend fun getImageResponse(categoryName: String): UnsplashModel {
+    override suspend fun getImageResponse(categoryName: String?): UnsplashModel {
         return api.getData(categoryName)
     }
 
-    override suspend fun gettAllData(userId : String): MutableList<TodoData> {
-        val list = todoDAO.gettAllList(userId)
+    override suspend fun getAllData(userId : String?): MutableList<TodoData> {
+        val list = todoDAO.getAllList(userId)
         return list
     }
 

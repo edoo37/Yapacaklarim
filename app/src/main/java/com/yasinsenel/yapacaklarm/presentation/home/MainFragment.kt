@@ -45,6 +45,8 @@ import com.yasinsenel.yapacaklarm.utils.Resource
 import com.yasinsenel.yapacaklarm.utils.removeWorkReqeust
 import com.yasinsenel.yapacaklarm.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import koleton.api.hideSkeleton
+import koleton.api.loadSkeleton
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -61,18 +63,12 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     private var newList : MutableList<TodoData>? = mutableListOf()
     private val filteredList : MutableList<TodoData> = mutableListOf()
     private val mainFragmentViewModel : MainFragmentViewModel by viewModels()
-    private lateinit var database : DatabaseReference
-    private lateinit var db : FirebaseFirestore
-    private lateinit var storage : StorageReference
+    private var currentUser : String? = null
     private lateinit var firebaseAnalytics : FirebaseAnalytics
-    private var createStorageRef : String? = null
     @Inject
     lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        db = Firebase.firestore
-        database = Firebase.database.reference
-        storage = Firebase.storage.reference
         firebaseAnalytics = Firebase.analytics
         MobileAds.initialize(requireContext())
 
@@ -96,11 +92,15 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         //checkAppMode()
 
 
+        currentUser = auth.currentUser?.uid
 
-        Firebase.crashlytics.setUserId(auth.currentUser!!.uid)
-        setBannerImage(auth.currentUser!!.uid)
+        currentUser?.let {
+            Firebase.crashlytics.setUserId(it)
+            setProfileImage(it)
+        }
 
-        mainFragmentViewModel.getAllData(auth.currentUser!!.uid)
+
+        binding.ivMain.loadSkeleton()
 
         val adRequest = AdRequest.Builder().build()
         binding.adView.loadAd(adRequest)
@@ -118,13 +118,13 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
             val args = arguments
             val bundle = args?.getParcelable("sendUserData",User::class.java)
-            binding!!.tvUsername.text = bundle?.name
+            binding.tvUsername.text = bundle?.name
         }
         else{
             val args = arguments
             @Suppress("DEPRECATION")
             val bundle : User? = args?.getParcelable("sendUserData")
-            binding!!.tvUsername.text = bundle?.name
+            binding.tvUsername.text = bundle?.name
         }
 
 
@@ -133,8 +133,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
 
         todoAdapter = TodoAdapter(this@MainFragment)
         getImageFromAPI()
-
-
         getList()
 
 
@@ -242,11 +240,11 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     }
 
     private fun checkAppMode(){
-        val anan = Hawk.get("mode",false)
+        val getMode = Hawk.get("mode",false)
         val isSelected = Hawk.get("isSelected",false)
 
         if(isSelected){
-            if(anan){
+            if(getMode){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
             else{
@@ -295,6 +293,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                                 Glide.with(requireContext())
                                     .load(imageData.data?.urls?.full)
                                     .into(binding.ivMain)
+                                binding.ivMain.hideSkeleton()
                             }
                             is Resource.Loading->{}
                             is Resource.Error->{}
@@ -381,7 +380,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         }
     }
 
-    fun setBannerImage(userId : String){
+    fun setProfileImage(userId : String){
         mainFragmentViewModel.getDataFromFireStorage(userId)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
@@ -389,7 +388,6 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
                     userImage?.let {
                         when(userImage){
                             is Resource.Success->{
-                                println(it)
                                 Glide.with(requireView())
                                 .load(it.data)
                                 .centerCrop()
@@ -406,6 +404,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
     }
 
     fun getList() {
+        mainFragmentViewModel.getAllData(currentUser)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 mainFragmentViewModel.getRoomList.collect{

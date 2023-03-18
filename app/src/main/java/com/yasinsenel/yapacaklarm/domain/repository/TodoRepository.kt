@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface TodoRepository  {
-    suspend fun getImageResponse(categoryName : String) : UnsplashModel
+    suspend fun getImageResponse(categoryName : String?) : UnsplashModel
 
-    suspend fun gettAllData(userId : String) : MutableList<TodoData>
+    suspend fun getAllData(userId : String?) : MutableList<TodoData>
 
     suspend fun insertItem(todoData: TodoData)
 

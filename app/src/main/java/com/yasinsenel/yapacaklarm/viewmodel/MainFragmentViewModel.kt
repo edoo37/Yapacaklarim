@@ -55,7 +55,7 @@ class MainFragmentViewModel @Inject constructor(
 
 
     //Main Fragment
-    fun getAllData(userId : String){
+    fun getAllData(userId : String?){
         viewModelScope.launch(Dispatchers.IO){
             getTodoUsecase.invoke(userId).collect{
                 _getRoomList.value = it

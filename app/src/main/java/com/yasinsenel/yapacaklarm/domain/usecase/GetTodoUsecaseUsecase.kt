@@ -8,10 +8,10 @@ import javax.inject.Inject
 
 
 class GetTodoUsecaseUsecase @Inject constructor(private val repository : TodoRepository) {
-    suspend fun invoke(userId : String) = flow {
+    suspend fun invoke(userId : String?) = flow {
         try {
             emit(Resource.Loading())
-            emit(Resource.Success(repository.gettAllData(userId)))
+            emit(Resource.Success(repository.getAllData(userId)))
         }catch (t:Throwable){
             emit(Resource.Error(t.toString()))
         }
