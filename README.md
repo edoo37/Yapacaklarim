@@ -33,6 +33,6 @@ Todo App, You can save, change and delete your daily plans using this app. View 
 
 
 | Delete Note |
-| --- |
+| ----- |
 |![WhatsApp Image 2023-03-10 at 16 48 02 (1)](https://user-images.githubusercontent.com/37002199/224334942-3e832b10-ed86-400d-92c9-f1508b2d05d3.jpeg)|
 
