@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
-class RemoveDataFromFirestore @Inject constructor(private val repository : TodoRepository) {
+class UpdateTodoUsecaseUsecase @Inject constructor(private val repository : TodoRepository) {
     suspend fun invoke(todoData: TodoData) = flow {
         try {
             emit(Resource.Loading())
-            emit(Resource.Success(repository.removeTodoDatatoFirestore(todoData)))
+            emit(Resource.Success(repository.updateItem(todoData)))
         }catch (t:Throwable){
             emit(Resource.Error(t.toString()))
         }

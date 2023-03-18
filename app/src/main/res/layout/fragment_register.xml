@@ -21,6 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_avatar" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -67,7 +68,7 @@
                 android:id="@+id/tiet_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textEmailAddress"
                 android:textSize="15dp" />
         </com.google.android.material.textfield.TextInputLayout>
 

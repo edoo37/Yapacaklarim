@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
-class GetAllDataFromFirestore @Inject constructor(private val repository : TodoRepository) {
+class InsertTodoDataToStorageUsecase @Inject constructor(private val repository : TodoRepository) {
     suspend fun invoke(todoData: TodoData) = flow {
         try {
             emit(Resource.Loading())
-            emit(Resource.Success(repository.getDataFromFirestore(todoData)))
+            emit(Resource.Success(repository.saveDatatoFirestorage(todoData)))
         }catch (t:Throwable){
             emit(Resource.Error(t.toString()))
         }

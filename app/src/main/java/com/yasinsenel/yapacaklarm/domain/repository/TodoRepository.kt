@@ -37,4 +37,6 @@ interface TodoRepository  {
     suspend fun getUserDataFromFirestore(view: View) : User
 
     suspend fun removeTodoDatatoFirestore(todoData: TodoData)
+
+    suspend fun removeTodoDatatoStorage(todoData: TodoData)
 }

@@ -84,6 +84,8 @@ class RegisterFragment() : Fragment(){
                                 firebaseStorage.child("profile-images/${firebaseAuth.currentUser!!.uid}").putFile(uri!!)
                             }
                             progressBar.isVisible = false
+                            val tabs = activity?.findViewById<ViewPager2>(R.id.viewPager)
+                            tabs?.currentItem = 0
                         }
                         else{
                             Toast.makeText(requireContext(),it.exception.toString(),Toast.LENGTH_SHORT).show()

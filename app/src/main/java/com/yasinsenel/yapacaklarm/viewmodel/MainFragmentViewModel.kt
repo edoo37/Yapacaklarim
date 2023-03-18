@@ -10,7 +10,6 @@ import com.yasinsenel.yapacaklarm.data.model.User
 import com.yasinsenel.yapacaklarm.domain.usecase.*
 import com.yasinsenel.yapacaklarm.model.TodoData
 import com.yasinsenel.yapacaklarm.model.UnsplashModel
-import com.yasinsenel.yapacaklarm.domain.repository.TodoRepository
 import com.yasinsenel.yapacaklarm.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,17 +19,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainFragmentViewModel @Inject constructor(
-    private val getTodoUsecase: GetTodoUsecase,
+    private val getTodoUsecase: GetTodoUsecaseUsecase,
     private val insertTodoUsecase: InsertTodoUsecase,
-    private val updateTodoUsecase: UpdateTodoUsecase,
+    private val updateTodoUsecase: UpdateTodoUsecaseUsecase,
     private val deleteTodoUsecase: DeleteTodoUsecase,
     private val getApiDataUsecase: GetApiDataUsecase,
-    private val insertUserDataToFirestore: InsertUserDataToFirestore,
-    private val getUserDataFromFirestore: GetUserDataFromFirestore,
-    private val getAllDataFromFirestore: GetAllDataFromFirestore,
-    private val removeDataFromFirestore: RemoveDataFromFirestore,
-    private val insertTodoDataToFirestore: InsertTodoDataToFirestore,
-    private val getDataFromFireStorage: GetDataFromFireStorage
+    private val insertUserDataToFirestoreUsecase: InsertUserDataToFirestoreUsecase,
+    private val getUserDataFromFirestore: GetUserDataFromFirestoreUsecase,
+    private val getAllDataFromFirestoreUsecase: GetAllDataFromFirestoreUsecase,
+    private val removeDataFromFirestore: RemoveDataFromFirestoreUsecase,
+    private val insertTodoDataToFirestore: InsertTodoDataToFirestoreUsecase,
+    private val getDataFromFireStorage: GetDataFromFireStorageUsecase,
+    private val removeDataFromStorageUsecase: RemoveDataFromStorageUsecase
 ) : ViewModel() {
 
 
@@ -94,7 +94,7 @@ class MainFragmentViewModel @Inject constructor(
     }
     fun saveUserDatatoFirestore(userId:String,name: String, email: String, password : String,activity : FragmentActivity){
         viewModelScope.launch {
-            insertUserDataToFirestore.invoke(userId,name,email,password,activity).collect{
+            insertUserDataToFirestoreUsecase.invoke(userId,name,email,password,activity).collect{
 
             }
 
@@ -134,8 +134,16 @@ class MainFragmentViewModel @Inject constructor(
     }
     fun getAllTodoDataFromFirestore(todoData: TodoData){
         viewModelScope.launch {
-            getAllDataFromFirestore.invoke(todoData).collect{
+            getAllDataFromFirestoreUsecase.invoke(todoData).collect{
                 _getAllTodoDataFromFirestore.emit(it)
+            }
+        }
+    }
+
+    fun removeTodoImageFromStorage(todoData: TodoData){
+        viewModelScope.launch {
+            removeDataFromStorageUsecase.invoke(todoData).collect{
+
             }
         }
     }

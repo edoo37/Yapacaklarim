@@ -1,4 +1,4 @@
-package com.yasinsenel.yapacaklarm.adapter
+package com.yasinsenel.yapacaklarm.presentation.onboarding
 
 
 import androidx.fragment.app.Fragment

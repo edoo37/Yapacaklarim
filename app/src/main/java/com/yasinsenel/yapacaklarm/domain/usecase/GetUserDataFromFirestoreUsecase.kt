@@ -1,18 +1,18 @@
 package com.yasinsenel.yapacaklarm.domain.usecase
 
 
-import com.yasinsenel.yapacaklarm.model.TodoData
+import android.view.View
 import com.yasinsenel.yapacaklarm.domain.repository.TodoRepository
 import com.yasinsenel.yapacaklarm.utils.Resource
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
-class InsertTodoDataToStorage @Inject constructor(private val repository : TodoRepository) {
-    suspend fun invoke(todoData: TodoData) = flow {
+class GetUserDataFromFirestoreUsecase @Inject constructor(private val repository : TodoRepository) {
+    suspend fun invoke(view : View) = flow {
         try {
             emit(Resource.Loading())
-            emit(Resource.Success(repository.saveDatatoFirestorage(todoData)))
+            emit(Resource.Success(repository.getUserDataFromFirestore(view)))
         }catch (t:Throwable){
             emit(Resource.Error(t.toString()))
         }

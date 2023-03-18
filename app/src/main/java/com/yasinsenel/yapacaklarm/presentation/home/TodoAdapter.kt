@@ -1,7 +1,6 @@
-package com.yasinsenel.yapacaklarm.adapter
+package com.yasinsenel.yapacaklarm.presentation.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.Navigation
@@ -86,12 +85,12 @@ class TodoAdapter(private val removeitem: removeItem) : RecyclerView.Adapter<Rec
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         return when(viewType){
-            AD_TYPE->
+            AD_TYPE ->
             {
                 val binding = AdsLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false)
                 Holder1(binding)
             }
-            CONTENT_TYPE->
+            CONTENT_TYPE ->
             {
                 val binding = ItemsLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false)
                 Holder(binding)

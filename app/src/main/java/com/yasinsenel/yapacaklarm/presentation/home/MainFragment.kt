@@ -28,11 +28,9 @@ import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -40,7 +38,6 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.orhanobut.hawk.Hawk
 import com.yasinsenel.yapacaklarm.R
-import com.yasinsenel.yapacaklarm.adapter.TodoAdapter
 import com.yasinsenel.yapacaklarm.data.model.User
 import com.yasinsenel.yapacaklarm.databinding.FragmentMainBinding
 import com.yasinsenel.yapacaklarm.model.TodoData
@@ -343,16 +340,16 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         //val listRef =database.child("users").child(auth.currentUser?.uid!!).child("todoList")
         //listRef.child(position.toString()).removeValue()
 
-        mainFragmentViewModel.removeDataFirestore(getData!!)
-        mainFragmentViewModel.deleteItem(getData)
-        if(getData.todoImage!=null){
-            storage.child(createStorageRef!!).delete()
-                .addOnSuccessListener {
+        viewLifecycleOwner.lifecycleScope.launch{
+            mainFragmentViewModel.removeDataFirestore(getData!!)
+        }
 
-                }
-                .addOnFailureListener {
+        viewLifecycleOwner.lifecycleScope.launch{
+            mainFragmentViewModel.deleteItem(getData!!)
+        }
 
-                }
+        if(getData?.todoImage!=null){
+            mainFragmentViewModel.removeTodoImageFromStorage(getData)
         }
         val getUri = newList?.get(data)?.todoImage
         if(getUri != null){
@@ -361,7 +358,7 @@ class MainFragment : Fragment(), TodoAdapter.removeItem {
         }
         if(newList!!.size%4==0){
             val list : MutableList<TodoData> = mutableListOf()
-            list.add(getData)
+            list.add(getData!!)
             val deneme = newList?.findLast { it.isAd == true }
             list.add(deneme!!)
             newList!!.removeAll(list)

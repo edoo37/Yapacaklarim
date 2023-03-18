@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My Todo List</string>
+    <string name="app_name">Todo List</string>
     <string name="btn_confirm">CONFIRM</string>
     <string name="slct_time">Select Time</string>
     <string name="slct_date">Select Date</string>

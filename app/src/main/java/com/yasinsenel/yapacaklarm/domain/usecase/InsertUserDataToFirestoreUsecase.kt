@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
-class InsertUserDataToFirestore @Inject constructor(private val repository : TodoRepository) {
+class InsertUserDataToFirestoreUsecase @Inject constructor(private val repository : TodoRepository) {
     suspend fun invoke(userId:String,name: String, email: String, password : String,activity : FragmentActivity) = flow {
         try {
             emit(Resource.Loading())

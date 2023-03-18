@@ -126,6 +126,17 @@ class TodoRepositoryImp @Inject constructor(private val api : ImagesAPI, private
 
     }
 
+    override suspend fun removeTodoDatatoStorage(todoData: TodoData) {
+        val createStorageRef = "images/${auth.currentUser?.uid}/${todoData.todoName}/${todoData.todoImage?.split("/")?.last()}"
+        firebaseStorage.child(createStorageRef).delete()
+            .addOnSuccessListener {
+
+            }
+            .addOnFailureListener {
+
+            }
+    }
+
     override suspend fun saveUserDatatoFirestore(userId:String,name: String, email: String, password : String,activity : FragmentActivity){
         auth.uid.let {uid->
             val user = hashMapOf(
